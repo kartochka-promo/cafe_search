@@ -30,7 +30,5 @@ class YaMaps:
 async def test():
     async with YaMaps("12b9aefc-0d5e-49ae-bfe2-75ee6cb61816") as yamap:
         print(await yamap.request(text="Кофе", lang="ru_RU"))
-
-
 loop = asyncio.get_event_loop()
 result = loop.run_until_complete(test())
