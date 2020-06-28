@@ -1,7 +1,5 @@
 
 import aiohttp
-import asyncio
-from typing import Dict
 
 
 class YaMaps:
@@ -21,10 +19,10 @@ class YaMaps:
         :type key: str
         :param key: api ключ для yandex maps
         """
-        self.url: str = f'https://search-maps.yandex.ru/v1/?apikey={key}'
-        self.session = None
+        self._url: str = f'https://search-maps.yandex.ru/v1/?apikey={key}'
+        self._session = None
 
-    def _open(self) -> obj:
+    def _open(self) -> object:
         """
         Protected метод для открытия сессии aiohttp
         Лучше пользоваться async with
@@ -32,7 +30,7 @@ class YaMaps:
         :rtype: obj
         :return: Возвращает экземпляр класса YaMaps
         """
-        self.session = aiohttp.ClientSession()
+        self._session = aiohttp.ClientSession()
         return self
 
     async def _close(self) -> None:
@@ -44,7 +42,7 @@ class YaMaps:
         :rtype: None
         :return: Ничего не возвращает
         """
-        await self.session.close()
+        await self._session.close()
 
     async def __aenter__(self) -> object:
         """
@@ -70,7 +68,20 @@ class YaMaps:
         """
         await self._close()
 
-    async def request(self, **kwargs: Dict[str, str]) -> object:
+    def _generate_request(self, **kwargs: str) -> str:
+        """
+        Метод, генерирующий запрос к yandex maps api
+
+        :type kwargs: Dict[str, str]
+        :param kwargs: набор параметров, отсылаемых через get запрос
+        где ключ - это имя параметра, значение - это значение параметра
+        :rtype: str
+        :return: Возвращает запрос к yandex maps api
+        """
+        request: str = "".join([f"&{key}={value}" for key, value in kwargs.items()])
+        return self._url + request
+
+    async def request(self, **kwargs: str) -> dict:
         """
         Метод, реализующий запрос к api yandex maps
         Список всех ключей и возможных параметров и требуемый ответ от сервера
@@ -78,19 +89,20 @@ class YaMaps:
 
         :type kwargs: Dict[str, str]
         :param kwargs: набор параметров, отсылаемых через get запрос
-        где ключ - это имя параметра, значение - это значение параметра
+         где ключ - это имя параметра, значение - это значение параметра
         :rtype: obj
         :return: Возвращает ответ от yandex maps
         """
 
-        request: str = "".join([f"&{key}={value}" for key, value in kwargs.items()])
-        async with self.session.get(self.url + request) as resp:
+        request: str = self._generate_request(**kwargs)
+        async with self._session.get(request) as resp:
             return await resp.json()
+
 
 # Testing
 # async def test():
 #     async with YaMaps("12b9aefc-0d5e-49ae-bfe2-75ee6cb61816") as yamap:
-#         print(await yamap.request(text="Кофе", lang="ru_RU"))
+#         print(await yamap.request(text="rr", lang="ru_RU"))
 #
 # loop = asyncio.get_event_loop()
 # result = loop.run_until_complete(test())
