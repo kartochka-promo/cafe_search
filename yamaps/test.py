@@ -26,7 +26,8 @@ def async_test(f):
 class TestYaMaps(unittest.TestCase):
     """
     Класс для тестирования класса YaMaps
-    Запуск тестов - python3 -m unittest -v test
+    Запуск тестов - coverage3 run --source yamaps/ -m unittest discover yamaps -v
+    Покрытие coverage report -m
     """
 
     def test_init(self):
