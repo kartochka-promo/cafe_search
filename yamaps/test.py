@@ -6,17 +6,31 @@ from typing import Any
 
 
 def async_test(f):
+    """
+    Декаратор, преобразующий async функцию в обычную для u
+
+    :type f: function
+    :param f: функция для обёртки
+    :rtype: function
+    :return: возвращает декорированную функцию
+    """
     def wrapper(*args: Any, **kwargs: Any):
         coro = asyncio.coroutine(f)
         future = coro(*args, **kwargs)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(future)
+
     return wrapper
 
 
 class TestYaMaps(unittest.TestCase):
+    """
+    Класс для тестирования класса YaMaps
+    Запуск тестов - python3 -m unittest -v test
+    """
 
     def test_init(self):
+        """ Тест на конструктор класса YaMaps """
         y_map: type(YaMaps) = YaMaps("12b9aefasc-0000-49ae-bfe2-65ecb61816")
         url: str = "https://search-maps.yandex.ru/v1/?apikey=12b9aefasc-0000-49ae-bfe2-65ecb61816"
         self.assertEqual(y_map._url, url)
@@ -39,6 +53,8 @@ class TestYaMaps(unittest.TestCase):
 
     @async_test
     async def test_open(self):
+        """ Тест на открытие и закрытие сессии, функции _open и _close """
+
         y_map: type(YaMaps) = YaMaps("12b9aefasc-00005ecb61816")
         url: str = "https://search-maps.yandex.ru/v1/?apikey=12b9aefasc-00005ecb61816"
         self.assertEqual(y_map._url, url)
@@ -68,6 +84,8 @@ class TestYaMaps(unittest.TestCase):
         await y_map._close()
 
     def test_generate_request(self):
+        """ Тест на генерирование Get запроса, функция generate_request """
+
         y_map: type(YaMaps) = YaMaps("12b9aefasc-1111-49ae-bfe2-65ecb61816")
         url: str = "https://search-maps.yandex.ru/v1/?apikey=12b9aefasc-1111-49ae-bfe2-65ecb61816"
         self.assertEqual(y_map._url, url)
@@ -98,6 +116,8 @@ class TestYaMaps(unittest.TestCase):
 
     @async_test
     async def test_async_wait(self):
+        """ Тест на открытие сесии с помощью async wait """
+
         y_map: type(YaMaps) = YaMaps("12b9aefasc-0000-49ae-1233-65ecb61816")
         url: str = "https://search-maps.yandex.ru/v1/?apikey=12b9aefasc-0000-49ae-1233-65ecb61816"
         self.assertEqual(y_map._url, url)
@@ -128,6 +148,8 @@ class TestYaMaps(unittest.TestCase):
 
     @async_test
     async def test_request(self):
+        """ Тест на отправку запроса к yandex maps api, функция request """
+
         y_map: type(YaMaps) = YaMaps("12b9aefasc-0000-49ae-1233-65ecb61816")
         url: str = "https://search-maps.yandex.ru/v1/?apikey=12b9aefasc-0000-49ae-1233-65ecb61816"
         self.assertEqual(y_map._url, url)
