@@ -1,6 +1,7 @@
 
 import aiohttp
 import asyncio
+from typing import Dict
 
 
 class YaMaps:
@@ -8,7 +9,7 @@ class YaMaps:
         key(stirng) - ваш api ключ для yandex maps
     """
     def __init__(self, key: str) -> None:
-        self.url = f'https://search-maps.yandex.ru/v1/?apikey={key}'
+        self.url: str = f'https://search-maps.yandex.ru/v1/?apikey={key}'
         self.session = None
 
     """ Protected метод для открытия сессии aiohttp
@@ -44,8 +45,8 @@ class YaMaps:
         Список всех ключей и возможных параметров и требуемый ответ от сервера 
         можно посмотреть здесь https://tech.yandex.ru/maps/geosearch/doc/concepts/request-docpage/    
     """
-    async def request(self, **kwargs: dict) -> object:
-        request = "".join([f"&{key}={value}" for key, value in kwargs.items()])
+    async def request(self, **kwargs: Dict[str, str]) -> object:
+        request: str = "".join([f"&{key}={value}" for key, value in kwargs.items()])
         async with self.session.get(self.url + request) as resp:
             return await resp.json()
 
