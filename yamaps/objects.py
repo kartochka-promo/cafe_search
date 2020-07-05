@@ -1,5 +1,6 @@
 import numpy as np
 from abc import abstractmethod
+
 from typing import Dict
 from typing import List
 from typing import Any
@@ -104,20 +105,22 @@ class Availability(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-        self.__destruct_intervals()
+        self.__destruct_intervals(self._context.get("Intervals"))
         self.__destruct_days()
 
-    def __destruct_intervals(self) -> None:
+    def __destruct_intervals(self, intervals: List[Dict[str, str]]) -> None:
         """
         Метод, котрый разбирает временные интервалы,
         находящиеся в контексте
 
+        :type intervals: List[List[str]]
+        :param intervals: (Интервалы работы. Не обязательное поле.)
         :rtype: None
         :return: Ничего не возвращает
         """
         if self._context.get("Intervals"):
             self.__intervals: List[List[str]] = [[interval.get("from"), interval.get("to")] for
-                                                 interval in self._context.get("Intervals")]
+                                                 interval in intervals]
 
         self.__twenty_four_hours: bool = not self.__intervals
 
@@ -260,6 +263,133 @@ class Availability(DestructObject):
         doc="Дни работы. Не обязательное поле.")
 
 
+class Hours(DestructObject):
+    """
+    Класс, описывающий режим работы организации, найденного объекта YandexMapsApi
+    Не обязательное поле.
+    Является разбираемым объектом(DestructObject)
+    https://tech.yandex.ru/maps/geosearch/doc/concepts/response_structure_business-docpage/
+    """
+
+    def __init__(self, context: Dict) -> None:
+        """
+        Конструктор класса Hours
+
+        :type context: Dict
+        :param context: контекст, для разбора в объект
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+        self.__text: str | None = None
+        self.__availabilities: List[type(Availability)] = []
+        super(Hours, self).__init__(context)
+
+    def _destruct(self):
+        """
+        Метод, котрый разбирает контекст,
+        переданный в конструктор на составные части
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+        self.__text: str | None = self._context.get("text")
+        self.__destruct_availabilities(self._context.get("Availabilities"))
+
+    def __destruct_availabilities(self, availabilities: List[Dict]):
+        """
+        Метод, котрый разбирает контекст режима работы предприятия,
+        переданный в конструктор на составные части
+
+        :type availabilities: List[Dict]
+        :param availabilities: контекст, для разбора в объект
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+        self.__availabilities: List[type(Availability)] = \
+            [Availability(availability_context) for availability_context in availabilities]
+
+    def get_text(self):
+        """
+        Getter поля text
+        (Описание режима работы в виде произвольного текста. Обязательное поле.)
+
+        :rtype: str Описание режима работы в виде произвольного текста. Обязательное поле.
+        :return: возвращает значение поля text
+        """
+
+        if self.__text:
+            return self.__text
+        else:
+            raise MissingRequiredProperty(self.set_text)
+
+    def set_text(self, text: str | None):
+        """
+        Setter поля text
+        (Описание режима работы в виде произвольного текста. Обязательное поле.)
+
+        :type text: str
+        :param text: (Описание режима работы в виде произвольного текста. Обязательное поле.)
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
+        self.__text: str | None = text
+
+    def del_text(self):
+        """
+        Deleter поля text
+        (Описание режима работы в виде произвольного текста. Обязательное поле.)
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
+        self.__text: str | None = None
+
+    def get_availabilities(self):
+        """
+        Getter поля availabilities
+        (Описание режима работы предприятия. Не обязательное поле.)
+
+        :rtype: List[Availability] Описание режима работы в виде произвольного текста. Обязательное поле.
+        :return: возвращает значение поля availabilities
+        """
+
+        return self.__availabilities
+
+    def set_availabilities(self, availabilities: List[Dict]):
+        """
+        Setter поля availabilities
+        (Описание режима работы предприятия. Не обязательное поле.)
+
+        :type availabilities: List[Availability]
+        :param availabilities: (Описание режима работы в виде произвольного текста. Обязательное поле.)
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
+        self.__destruct_availabilities(availabilities)
+
+    def del_availabilities(self):
+        """
+        Deleter поля availabilities
+        (Описание режима работы предприятия. Не обязательное поле.)
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
+        self.__availabilities: List[Availability] = []
+
+    text: str = property(
+        get_text, set_text, del_text,
+        doc="Описание режима работы в виде произвольного текста. Обязательное поле.")
+
+    availabilities: List[type(Availability)] = property(
+        get_availabilities, set_availabilities, del_availabilities,
+        doc="Режим работы предприятия")
+
+
 class Geometry(DestructObject):
     """
     Класс описывающий геометрию найденного объекта YandexMapsApi.
@@ -277,7 +407,7 @@ class Geometry(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-        self.__type: str | None = None
+        self.__type: str | None = ""
         self.__coordinates: type(np.array) | None = None
         super(Geometry, self).__init__(context)
 
@@ -371,6 +501,14 @@ class Geometry(DestructObject):
         get_coordinates, set_coordinates, del_coordinates,
         doc="Координаты организации в последовательности «долгота, широта».Обязательное поле.")
 
+
+
+
+# a = {'text': 'пн-пт 9:00–18:00, перерыв 13:00–14:00', 'Availabilities':
+#     [{'Intervals': [{'from': '09:00:00', 'to': '13:00:00'}, {'from': '14:00:00', 'to': '18:00:00'}],
+#       'Monday': True, 'Tuesday': True, 'Wednesday': True, 'Thursday': True, 'Friday': True}]}
+#
+# Hours(a)
 
 # a = {'Intervals': [{'from': '09:00:00', 'to': '13:00:00'}, {'from': '14:00:00', 'to': '18:00:00'}], 'Monday': True,
 #      'Tuesday': True, 'Wednesday': True, 'Thursday': True, 'Friday': True}
