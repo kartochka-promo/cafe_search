@@ -248,6 +248,17 @@ class Availability(DestructObject):
 
         self.__days: Set[str] = set()
 
+    intervals: List[List[str]] = property(
+        get_intervals, set_intervals, del_intervals, doc="Интервалы работы. Не обязательное поле.")
+
+    twenty_four_hours: bool = property(
+        get_twenty_four_hours, set_twenty_four_hours, del_twenty_four_hours,
+        doc="Круглосуточно или нет. Не обязательное поле.")
+
+    days: Set[str] = property(
+        get_days, set_days, del_days,
+        doc="Дни работы. Не обязательное поле.")
+
 
 class Geometry(DestructObject):
     """
