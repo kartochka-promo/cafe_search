@@ -2,7 +2,7 @@
 from typing import Dict
 from typing import List
 from typing import Set
-from Objects.Base.base import DestructObject
+from objects.base.base import DestructObject
 
 
 class Availability(DestructObject):

@@ -2,8 +2,8 @@
 import numpy as np
 from typing import Dict
 
-from ..Base.base import DestructObject
-from ..Exceptions.exceptions import MissingRequiredProperty
+from ..base.base import DestructObject
+from ..exceptions.exceptions import MissingRequiredProperty
 
 
 class Geometry(DestructObject):
@@ -16,7 +16,7 @@ class Geometry(DestructObject):
 
     def __init__(self, context: Dict) -> None:
         """
-        Конструктор класса Geometry
+        Конструктор класса geometry
 
         :type context: Dict
         :param context: контекст, для разбора в объект

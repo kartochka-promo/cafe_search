@@ -2,12 +2,12 @@
 from typing import Dict
 from typing import List
 
-from Objects.Base.base import DestructObject
-from Objects.Exceptions.exceptions import MissingRequiredProperty
+from objects.base.base import DestructObject
+from objects.exceptions.exceptions import MissingRequiredProperty
 
-from Objects.CompanyMetaData.Phone.phone import Phone
-from Objects.CompanyMetaData.Category.category import Category
-from Objects.CompanyMetaData.Hours.hours import Hours
+from objects.company_meta_data.phone.phone import Phone
+from objects.company_meta_data.category.category import Category
+from objects.company_meta_data.hours.hours import Hours
 
 
 class CompanyMetaData(DestructObject):
@@ -22,7 +22,7 @@ class CompanyMetaData(DestructObject):
 
     def __init__(self, context: Dict) -> None:
         """
-        Конструктор класса CompanyMetaData
+        Конструктор класса company_meta_data
 
         :type context: Dict
         :param context: контекст, для разбора в объект
@@ -254,7 +254,7 @@ class CompanyMetaData(DestructObject):
         Getter поля categories
         (Список категорий, в которые входит организация.)
 
-        :rtype: List[Category] Список категорий, в которые входит организация.
+        :rtype: List[category] Список категорий, в которые входит организация.
         :return: возвращает значение поля categories
         """
 

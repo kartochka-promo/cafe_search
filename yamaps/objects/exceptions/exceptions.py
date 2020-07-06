@@ -31,6 +31,8 @@ class MissingRequiredProperty(Exception):
         в результате чего можно сразу же вызвать обработчик, к
         оторый позволит присвоить отсутствующее значение, свойству объекта
         Пример
+
+            obj.a = None
             try:
                 print(obj.a)
             except MissingRequiredProperty as handler:

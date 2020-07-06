@@ -2,9 +2,9 @@
 from typing import Dict
 from typing import List
 
-from Objects.Base.base import DestructObject
-from Objects.Exceptions.exceptions import MissingRequiredProperty
-from ..Hours.Avability.avability import Availability
+from objects.base.base import DestructObject
+from objects.exceptions.exceptions import MissingRequiredProperty
+from ..hours.avability.avability import Availability
 
 
 class Hours(DestructObject):
@@ -17,7 +17,7 @@ class Hours(DestructObject):
 
     def __init__(self, context: Dict) -> None:
         """
-        Конструктор класса Hours
+        Конструктор класса hours
 
         :type context: Dict
         :param context: контекст, для разбора в объект

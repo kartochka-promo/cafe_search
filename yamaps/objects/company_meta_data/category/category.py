@@ -1,7 +1,7 @@
 
 from typing import Dict
-from Objects.Base.base import DestructObject
-from Objects.Exceptions.exceptions import MissingRequiredProperty
+from objects.base.base import DestructObject
+from objects.exceptions.exceptions import MissingRequiredProperty
 
 
 class Category(DestructObject):
@@ -15,7 +15,7 @@ class Category(DestructObject):
 
     def __init__(self, context: Dict) -> None:
         """
-        Конструктор класса Category
+        Конструктор класса category
 
         :type context: Dict
         :param context: контекст, для разбора в объект
