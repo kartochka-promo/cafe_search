@@ -353,3 +353,11 @@ class CompanyMetaData(DestructObject):
         """
 
         self.__hours: Hours | None = None
+
+    id = property(get_id, set_id, del_id, doc="")
+    name = property(get_name, set_name, del_name, doc="")
+    address = property(get_address, set_address, del_address, doc="")
+    url = property(get_url, set_url, del_url, doc="")
+    categories = property(get_categories, set_categories, del_categories, doc="")
+    phones = property(get_phones, set_phones, del_phones, doc="")
+    hours = property(get_hours, set_hours, del_hours, doc="")
