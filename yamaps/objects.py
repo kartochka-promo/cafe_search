@@ -74,6 +74,127 @@ class DestructObject:
         return self._context
 
 
+class Category(DestructObject):
+
+    def __init__(self, context: Dict) -> None:
+        self.__cls: str = ""
+        self.__name: str | None = None
+        super(Category, self).__init__(context)
+
+    def _destruct(self) -> None:
+        self.__cls: str = self._context.get("class")
+        self.__name: str | None = self._context.get("name")
+
+    def get_class(self) -> str:
+        return self.__cls
+
+    def set_class(self, cls: str) -> None:
+        self.__cls: str = cls
+
+    def del_class(self) -> None:
+        self.__cls: str = ""
+
+    def get_name(self) -> str:
+        if self.__name:
+            return self.__name
+        else:
+            raise MissingRequiredProperty(self.set_name)
+
+    def set_name(self, name: str | None) -> None:
+        self.__name: str | None = name
+
+    def del_name(self) -> None:
+        self.__name: str | None = None
+
+    cls = property(get_class, set_class, del_class, doc="")
+    name = property(get_name, set_name, del_name, doc="")
+
+
+class Categories(DestructObject):
+
+    def __init__(self, context: List[Dict]) -> None:
+        self.__categories: List[Category] = []
+        super(Categories, self).__init__(context)
+
+    def _destruct(self) -> None:
+        self.__destruct_categories(self._context)
+
+    def __destruct_categories(self, categories: List) -> None:
+        self.__categories: List[Category] = [Category(category) for category in categories]
+
+    def get_categories(self) -> List[Category]:
+        return self.__categories
+
+    def set_categories(self, categories: List[Dict]) -> None:
+        self.__destruct_categories(categories)
+
+    def del_categories(self) -> None:
+        self.__categories: List[Category] = []
+
+    categories = property(get_categories, set_categories, del_categories, doc="")
+
+
+class Phone(DestructObject):
+
+    def __init__(self, context: Dict) -> None:
+        self.__type: str = ""
+        self.__formatted: str | None = None
+        super(Phone, self).__init__(context)
+
+    def _destruct(self) -> None:
+        self.__type: str = self._context.get("type")
+        self.__formatted: str | None = self._context.get("formatted")
+
+    def get_type(self) -> str:
+        return self.__type
+
+    def set_type(self, type: str) -> None:
+        self.__type: str = type
+
+    def del_type(self) -> None:
+        self.__type: str = ""
+
+    def get_formatted(self) -> str:
+        if self.__formatted:
+            return self.__formatted
+        else:
+            raise MissingRequiredProperty(self.set_formatted)
+
+    def set_formatted(self, formatted: str | None):
+        self.__formatted: str | None = formatted
+
+    def del_formatted(self):
+        self.__formatted: str | None = None
+
+    type = property(get_type, set_type, del_type, doc="")
+    formatted = property(get_formatted, set_formatted, del_formatted, doc="")
+
+
+class Phones(DestructObject):
+
+    def __init__(self, context: List[Dict]) -> None:
+        self.__phones: List[Phone] = []
+        super(Phones, self).__init__(context)
+
+    def _destruct(self) -> None:
+        self.__destruct_phones(self._context)
+
+    def __destruct_phones(self, phones) -> None:
+        if phones:
+            self.__phones: List[Phone] = [Phone(contact) for contact in phones]
+
+    def get_phones(self) -> List[Phone]:
+        return self.__phones
+
+    def set_phones(self, phones) -> None:
+        self.__destruct_phones(phones)
+
+    def del_phones(self) -> None:
+        self.__phones: List[Phone] = []
+
+    phones = property(get_phones, set_phones, del_phones, doc="")
+
+
 class Availability(DestructObject):
     """
     Класс, описывающий даты и время работы, найденного объекта YandexMapsApi
@@ -500,6 +621,112 @@ class Geometry(DestructObject):
     coordinates: property = property(
         get_coordinates, set_coordinates, del_coordinates,
         doc="Координаты организации в последовательности «долгота, широта».Обязательное поле.")
+
+
+class CompanyMetaData(DestructObject):
+
+    def __init__(self, context: Dict) -> None:
+        self.__id: str | None = None
+        self.__name: str | None = None
+        self.__address: str = ""
+        self.__url: str = ""
+        self.__categories: Categories | None = None
+        self.__phones: Phones | None = None
+        self.__hours: Hours | None = None
+        super(CompanyMetaData, self).__init__(context)
+
+    def _destruct(self) -> None:
+        self.__destruct_simple_properties()
+        self.__destruct_categories(self._context.get("Categories"))
+        self.__destruct_phones(self._context.get("Phones"))
+        self.__destruct_hours(self._context.get("hours"))
+
+    def __destruct_simple_properties(self) -> None:
+        self.__id: str | None = self._context.get("id")
+        self.__name: str | None = self._context.get("name")
+        self.__address: str = self._context.get("address")
+        self.__url: str = self._context.get("url")
+
+    def __destruct_categories(self, categories_context) -> None:
+        if categories_context:
+            self.__categories: Categories = Categories(categories_context)
+
+    def __destruct_phones(self, phones_context):
+        if phones_context:
+            self.__phones: Phones = Phones(phones_context)
+
+    def __destruct_hours(self, hours_context):
+        if hours_context:
+            self.__hours: Hours = Hours(hours_context)
+
+    def get_id(self) -> str:
+        if self.__id:
+            return self.__id
+        else:
+            raise MissingRequiredProperty(self.set_id)
+
+    def set_id(self, id: str | None) -> None:
+        self.__id: str | None = id
+
+    def del_id(self) -> None:
+        self.__id: str | None = None
+
+    def get_name(self) -> str:
+        if self.__name:
+            return self.__name
+        else:
+            raise MissingRequiredProperty(self.set_name)
+
+    def set_name(self, name) -> None:
+        self.__name: str | None = name
+
+    def del_name(self) -> None:
+        self.__name: str | None = None
+
+    def get_address(self) -> str | None:
+        return self.__address
+
+    def set_address(self, address: str) -> None:
+        self.__address: str = address
+
+    def del_address(self) -> None:
+        self.__address: str = ""
+
+    def get_url(self) -> str:
+        return self.__url
+
+    def set_url(self, url: str) -> None:
+        self.__url: str = url
+
+    def del_url(self) -> None:
+        self.__url: str = ""
+
+    def get_categories(self) -> Categories | None:
+        return self.__categories
+
+    def set_categories(self, categories: List[Dict]):
+        self.__destruct_categories(categories)
+
+    def del_categories(self) -> None:
+        self.__categories: Categories | None = None
+
+    def get_phones(self) -> Phones | None:
+        return self.__phones
+
+    def set_phones(self, phones: List[Dict]):
+        self.__destruct_phones(phones)
+
+    def del_phones(self) -> None:
+        self.__phones: Phones | None = None
+
+    def get_hours(self) -> Hours | None:
+        return self.__hours
+
+    def set_hours(self, hours: List[Dict]) -> None:
+        self.__destruct_hours(hours)
+
+    def del_hours(self):
+        self.__hours: Hours | None = None
 
 
 
