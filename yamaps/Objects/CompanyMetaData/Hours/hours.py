@@ -24,6 +24,7 @@ class Hours(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+
         self.__text: str | None = None
         self.__availabilities: List[type(Availability)] = []
         super(Hours, self).__init__(context)
@@ -36,6 +37,7 @@ class Hours(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+
         self.__text: str | None = self._context.get("text")
         self.__destruct_availabilities(self._context.get("Availabilities"))
 
@@ -49,6 +51,7 @@ class Hours(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+
         self.__availabilities: List[type(Availability)] = \
             [Availability(availability_context) for availability_context in availabilities]
 
