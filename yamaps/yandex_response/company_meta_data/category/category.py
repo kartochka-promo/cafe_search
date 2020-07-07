@@ -1,7 +1,7 @@
 
 from typing import Dict
-from objects.base.base import DestructObject
-from objects.exceptions.exceptions import MissingRequiredProperty
+from yandex_response.base.base import DestructObject
+from yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class Category(DestructObject):

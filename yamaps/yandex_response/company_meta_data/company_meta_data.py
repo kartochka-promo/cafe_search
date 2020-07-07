@@ -2,12 +2,12 @@
 from typing import Dict
 from typing import List
 
-from objects.base.base import DestructObject
-from objects.exceptions.exceptions import MissingRequiredProperty
+from yandex_response.base.base import DestructObject
+from yandex_response.exceptions.exceptions import MissingRequiredProperty
 
-from objects.company_meta_data.phone.phone import Phone
-from objects.company_meta_data.category.category import Category
-from objects.company_meta_data.hours.hours import Hours
+from yandex_response.company_meta_data.phone.phone import Phone
+from yandex_response.company_meta_data.category.category import Category
+from yandex_response.company_meta_data.hours.hours import Hours
 
 
 class CompanyMetaData(DestructObject):

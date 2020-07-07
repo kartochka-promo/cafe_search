@@ -1,6 +1,5 @@
-import numpy as np
-from abc import abstractmethod
 
+from abc import abstractmethod
 from typing import Dict
 from typing import List
 from typing import Any

@@ -2,8 +2,8 @@
 import numpy as np
 from typing import Dict
 
-from ..base.base import DestructObject
-from ..exceptions.exceptions import MissingRequiredProperty
+from ....yandex_response.base.base import DestructObject
+from ....yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class Geometry(DestructObject):

@@ -2,8 +2,8 @@
 from typing import Dict
 from typing import List
 
-from objects.base.base import DestructObject
-from objects.exceptions.exceptions import MissingRequiredProperty
+from yandex_response.base.base import DestructObject
+from yandex_response.exceptions.exceptions import MissingRequiredProperty
 from ..hours.avability.avability import Availability
 
 

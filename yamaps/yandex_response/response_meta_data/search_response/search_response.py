@@ -189,7 +189,3 @@ class SearchResponse(DestructObject):
 
     display = property(get_display, set_display, del_display,
                        doc="Рекомендации по отображению результатов поиска")
-
-
-
-
