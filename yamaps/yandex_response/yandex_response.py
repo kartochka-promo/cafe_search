@@ -140,7 +140,7 @@ class YandexResponse(DestructObject):
         (Контейнер результатов поиска. Обязательное поле.)
 
         :rtype: None
-        :return: Ничего не возвращает
+        :return: Ничего не возвращаетs
         """
 
         self.__features: List[Feature] = []
@@ -150,6 +150,3 @@ class YandexResponse(DestructObject):
 
     features = property(get_features, set_features, del_features,
                         doc="(Контейнер результатов поиска. Обязательное поле.")
-
-
-

@@ -1,6 +1,7 @@
 
 import numpy as np
 from typing import Dict
+from typing import List
 
 from ....yandex_response.base.base import DestructObject
 from ....yandex_response.exceptions.exceptions import MissingRequiredProperty
@@ -23,6 +24,7 @@ class Geometry(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+
         self.__type: str | None = ""
         self.__coordinates: type(np.array) | None = None
         super(Geometry, self).__init__(context)
@@ -35,11 +37,35 @@ class Geometry(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-        self.__type: str | None = self._context.get("type")
-        self.__coordinates: type(np.array) | None = np.array(
-            self._context.get("geometry"))
 
-    def get_type(self) -> str:
+        self.__destruct_simple_properties()
+        self.__destruct_coordinates(self._context.get("geometry"))
+
+    def __destruct_simple_properties(self) -> None:
+        """
+        Метод, котрый разбирает простые свойства(не вложенные) из контекста,
+        который передаётся в конструктор
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
+        self.__type: str | None = self._context.get("type")
+
+    def __destruct_coordinates(self, coordinates_context: List[float]) -> None:
+        """
+        Метод, котрый разбирает свойство coordinates из контекста,
+        который передаётся в конструктор
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
+        if coordinates_context:
+            self.__coordinates: type(np.array) | None = \
+                np.array(coordinates_context)
+
+    def _get_type(self) -> str:
         """
         Getter поля type
         (Тип геометрии. Обязательное поле.)
@@ -47,12 +73,13 @@ class Geometry(DestructObject):
         :rtype: str
         :return: возвращает значение поля type
         """
+
         if self.__type:
             return self.__type
         else:
-            raise MissingRequiredProperty(self.set_type)
+            raise MissingRequiredProperty(self._set_type)
 
-    def set_type(self, type: str) -> None:
+    def _set_type(self, type: str) -> None:
         """
         Setter поля type
         (Тип геометрии. Обязательное поле.)
@@ -62,9 +89,10 @@ class Geometry(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+
         self.__type: str | None = type
 
-    def del_type(self) -> None:
+    def _del_type(self) -> None:
         """
         Deleter поля type
         (Тип геометрии. Обязательное поле.)
@@ -72,9 +100,10 @@ class Geometry(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+
         self.__type: str | None = None
 
-    def get_coordinates(self) -> np.array:
+    def _get_coordinates(self) -> np.array:
         """
         Getter поля coordinates
         (Координаты организации в последовательности «долгота, широта».
@@ -83,9 +112,13 @@ class Geometry(DestructObject):
         :rtype: np.array
         :return: Возвращает точку np.array
         """
-        return self.__coordinates
 
-    def set_coordinates(self, coordinates: np.array) -> None:
+        if self.__coordinates:
+            return self.__coordinates
+        else:
+            raise MissingRequiredProperty(self._set_coordinates)
+
+    def _set_coordinates(self, coordinates: List[float]) -> None:
         """
         Setter поля coordinates
         (Координаты организации в последовательности «долгота, широта».
@@ -96,9 +129,10 @@ class Geometry(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-        self.__coordinates: type(np.array) | None = coordinates
 
-    def del_coordinates(self) -> None:
+        self.__destruct_coordinates(coordinates)
+
+    def _del_coordinates(self) -> None:
         """
         Deleter поля coordinates
         (Координаты организации в последовательности «долгота, широта».
@@ -110,9 +144,8 @@ class Geometry(DestructObject):
 
         self.__coordinates: type(np.array) | None = None
 
-    type: property = property(
-        get_type, set_type, del_type, doc="Тип геометрии. Обязательное поле.")
+    type: property = property(_get_type, _set_type, _del_type,
+                              doc="Тип геометрии. Обязательное поле.")
 
-    coordinates: property = property(
-        get_coordinates, set_coordinates, del_coordinates,
-        doc="Координаты организации в последовательности «долгота, широта».Обязательное поле.")
+    coordinates: property = property(_get_coordinates, _set_coordinates, _del_coordinates,
+                                     doc="Координаты организации.Обязательное поле.")
