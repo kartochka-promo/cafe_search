@@ -8,7 +8,7 @@ from ..response_meta_data.search_response.search_response import SearchResponse
 
 class ResponseMetaData(DestructObject):
     """
-    Класс, описывающий метаданные, описывающие запрос и ответ. Обязательное поле.
+    Класс, описывающий метаданные, описывающие запрос и ответ.
     Конструируется из полученного объекта при запросе поиска организаций
     Обязательное поле.
     Является разбираемым объектом(DestructObject)
