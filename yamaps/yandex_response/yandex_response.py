@@ -145,8 +145,11 @@ class YandexResponse(DestructObject):
 
         self.__features: List[Feature] = []
 
-    response_meta_data = property(get_response_meta_data, set_response_meta_data, del_response_meta_data, doc="")
-    features = property(get_features, set_features, del_features, doc="")
+    response_meta_data = property(get_response_meta_data, set_response_meta_data, del_response_meta_data,
+                                  doc="Метаданные, описывающие запрос и ответ. Обязательное поле.")
+
+    features = property(get_features, set_features, del_features,
+                        doc="(Контейнер результатов поиска. Обязательное поле.")
 
 
 
