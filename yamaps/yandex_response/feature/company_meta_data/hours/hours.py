@@ -2,8 +2,8 @@
 from typing import Dict
 from typing import List
 
-from yandex_response.base.base import DestructObject
-from yandex_response.exceptions.exceptions import MissingRequiredProperty
+from ....base.base import DestructObject
+from ....exceptions.exceptions import MissingRequiredProperty
 from ..hours.avability.avability import Availability
 
 
@@ -37,9 +37,9 @@ class Hours(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-
-        self.__text: str | None = self._context.get("text")
-        self.__destruct_availabilities(self._context.get("Availabilities"))
+        if type(self._context) is dict:
+            self.__text: str | None = self._context.get("text")
+            self.__destruct_availabilities(self._context.get("Availabilities"))
 
     def __destruct_availabilities(self, availabilities: List[Dict]):
         """
@@ -52,10 +52,11 @@ class Hours(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__availabilities: List[type(Availability)] = \
-            [Availability(availability_context) for availability_context in availabilities]
+        if type(availabilities) is list:
+            self.__availabilities: List[type(Availability)] = \
+                [Availability(availability_context) for availability_context in availabilities]
 
-    def get_text(self):
+    def _get_text(self):
         """
         Getter поля text
         (Описание режима работы в виде произвольного текста. Обязательное поле.)
@@ -67,9 +68,9 @@ class Hours(DestructObject):
         if self.__text:
             return self.__text
         else:
-            raise MissingRequiredProperty(self.set_text)
+            raise MissingRequiredProperty(self._set_text)
 
-    def set_text(self, text: str | None):
+    def _set_text(self, text: str or None):
         """
         Setter поля text
         (Описание режима работы в виде произвольного текста. Обязательное поле.)
@@ -82,7 +83,7 @@ class Hours(DestructObject):
 
         self.__text: str | None = text
 
-    def del_text(self):
+    def _del_text(self):
         """
         Deleter поля text
         (Описание режима работы в виде произвольного текста. Обязательное поле.)
@@ -93,7 +94,7 @@ class Hours(DestructObject):
 
         self.__text: str | None = None
 
-    def get_availabilities(self):
+    def _get_availabilities(self):
         """
         Getter поля availabilities
         (Описание режима работы предприятия. Не обязательное поле.)
@@ -104,7 +105,7 @@ class Hours(DestructObject):
 
         return self.__availabilities
 
-    def set_availabilities(self, availabilities: List[Dict]):
+    def _set_availabilities(self, availabilities: List[Dict]):
         """
         Setter поля availabilities
         (Описание режима работы предприятия. Не обязательное поле.)
@@ -117,7 +118,7 @@ class Hours(DestructObject):
 
         self.__destruct_availabilities(availabilities)
 
-    def del_availabilities(self):
+    def _del_availabilities(self):
         """
         Deleter поля availabilities
         (Описание режима работы предприятия. Не обязательное поле.)
@@ -128,10 +129,8 @@ class Hours(DestructObject):
 
         self.__availabilities: List[Availability] = []
 
-    text: str = property(
-        get_text, set_text, del_text,
-        doc="Описание режима работы в виде произвольного текста. Обязательное поле.")
+    text: str = property(_get_text, _set_text, _del_text,
+                         doc="Описание режима работы в виде произвольного текста. Обязательное поле.")
 
-    availabilities: List[type(Availability)] = property(
-        get_availabilities, set_availabilities, del_availabilities,
-        doc="Режим работы предприятия")
+    availabilities: List[type(Availability)] = property(_get_availabilities, _set_availabilities, _del_availabilities,
+                                                        doc="Режим работы предприятия")

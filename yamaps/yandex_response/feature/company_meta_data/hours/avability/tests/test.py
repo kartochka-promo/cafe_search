@@ -1,6 +1,5 @@
 
 from ..avability import Availability
-from ......exceptions.exceptions import MissingRequiredProperty
 import unittest
 
 
