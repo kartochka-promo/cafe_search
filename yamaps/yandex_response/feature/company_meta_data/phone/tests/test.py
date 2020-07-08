@@ -1,9 +1,7 @@
 
 from ..phone import Phone
 from .....exceptions.exceptions import MissingRequiredProperty
-
 import unittest
-import numpy as np
 
 
 class TestGeometry(unittest.TestCase):

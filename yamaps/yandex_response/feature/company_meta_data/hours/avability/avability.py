@@ -2,7 +2,7 @@
 from typing import Dict
 from typing import List
 from typing import Set
-from yandex_response.base.base import DestructObject
+from .....base.base import DestructObject
 
 
 class Availability(DestructObject):
@@ -25,7 +25,7 @@ class Availability(DestructObject):
 
         self.__days: Set[str] = set()
         self.__intervals: List[List[str]] = []
-        self.__twenty_four_hours: bool = False
+        self.__twenty_four_hours: bool or None = None
         super(Availability, self).__init__(context)
 
     def _destruct(self) -> None:
@@ -36,8 +36,10 @@ class Availability(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-        self.__destruct_intervals(self._context.get("Intervals"))
-        self.__destruct_days()
+        if type(self._context) is dict:
+            self.__destruct_intervals(self._context.get("Intervals"))
+            self.__destruct_twenty_four_hours()
+            self.__destruct_days()
 
     def __destruct_intervals(self, intervals: List[Dict[str, str]]) -> None:
         """
@@ -49,11 +51,13 @@ class Availability(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-        if self._context.get("Intervals"):
+        if type(intervals) is list:
             self.__intervals: List[List[str]] = [[interval.get("from"), interval.get("to")] for
                                                  interval in intervals]
 
-        self.__twenty_four_hours: bool = not self.__intervals
+    def __destruct_twenty_four_hours(self):
+        if type(self._context) is dict:
+            self.__twenty_four_hours: bool or None = self._context.get("TwentyFourHours")
 
     def __destruct_days(self) -> None:
         """
@@ -82,7 +86,7 @@ class Availability(DestructObject):
             if self._context.get(day):
                 self.__days.add(day)
 
-    def get_intervals(self) -> List[List[str]]:
+    def _get_intervals(self) -> List[List[str]]:
         """
         Getter поля intervals
         (Интервалы работы. Не обязательное поле.)
@@ -92,7 +96,7 @@ class Availability(DestructObject):
         """
         return self.__intervals
 
-    def set_intervals(self, intervals: List[List[str]]) -> None:
+    def _set_intervals(self, intervals: List[List[str]]) -> None:
         """
         Setter поля intervals
         (Интервалы работы. Не обязательное поле.)
@@ -104,7 +108,7 @@ class Availability(DestructObject):
         """
         self.__intervals: List[List[str]] = intervals
 
-    def del_intervals(self) -> None:
+    def _del_intervals(self) -> None:
         """
         Deleter поля intervals
         (Интервалы работы. Не обязательное поле.)
@@ -114,7 +118,7 @@ class Availability(DestructObject):
         """
         self.__intervals: List[List[str]] = []
 
-    def get_twenty_four_hours(self) -> bool:
+    def _get_twenty_four_hours(self) -> bool or None:
         """
         Getter поля twenty_four_hours
         (Круглосуточно или нет. Не обязательное поле.)
@@ -124,7 +128,7 @@ class Availability(DestructObject):
         """
         return self.__twenty_four_hours
 
-    def set_twenty_four_hours(self, twenty_four_hours: bool) -> None:
+    def _set_twenty_four_hours(self, twenty_four_hours: bool or None) -> None:
         """
         Setter поля twenty_four_hours
         (Круглосуточно или нет. Не обязательное поле.)
@@ -136,7 +140,7 @@ class Availability(DestructObject):
         """
         self.__twenty_four_hours: bool = twenty_four_hours
 
-    def del_twenty_four_hours(self) -> None:
+    def _del_twenty_four_hours(self) -> None:
         """
         Deleter поля twenty_four_hours
         (Круглосуточно или нет. Не обязательное поле.)
@@ -145,9 +149,9 @@ class Availability(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__twenty_four_hours: bool = False
+        self.__twenty_four_hours: bool or None = None
 
-    def get_days(self) -> Set[str]:
+    def _get_days(self) -> Set[str]:
         """
         Getter поля days
         (Дни работы. Не обязательное поле.)
@@ -158,7 +162,7 @@ class Availability(DestructObject):
 
         return self.__days
 
-    def set_days(self, days: Set[str]) -> None:
+    def _set_days(self, days: Set[str]) -> None:
         """
         Setter поля days
         (Дни работы. Не обязательное поле.)
@@ -171,7 +175,7 @@ class Availability(DestructObject):
 
         self.__days: Set[str] = days
 
-    def del_days(self) -> None:
+    def _del_days(self) -> None:
         """
         Deleter поля days
         (Дни работы. Не обязательное поле.)
@@ -182,13 +186,11 @@ class Availability(DestructObject):
 
         self.__days: Set[str] = set()
 
-    intervals: List[List[str]] = property(
-        get_intervals, set_intervals, del_intervals, doc="Интервалы работы. Не обязательное поле.")
+    intervals: List[List[str]] = property(_get_intervals, _set_intervals, _del_intervals,
+                                          doc="Интервалы работы. Не обязательное поле.")
 
-    twenty_four_hours: bool = property(
-        get_twenty_four_hours, set_twenty_four_hours, del_twenty_four_hours,
-        doc="Круглосуточно или нет. Не обязательное поле.")
+    twenty_four_hours: bool = property(_get_twenty_four_hours, _set_twenty_four_hours, _del_twenty_four_hours,
+                                       doc="Круглосуточно или нет. Не обязательное поле.")
 
-    days: Set[str] = property(
-        get_days, set_days, del_days,
-        doc="Дни работы. Не обязательное поле.")
+    days: Set[str] = property(_get_days, _set_days, _del_days,
+                              doc="Дни работы. Не обязательное поле.")
