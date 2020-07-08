@@ -1,7 +1,7 @@
 
 from typing import Dict
-from yandex_response.base.base import DestructObject
-from yandex_response.exceptions.exceptions import MissingRequiredProperty
+from ....base.base import DestructObject
+from ....exceptions.exceptions import MissingRequiredProperty
 
 
 class Category(DestructObject):
@@ -23,7 +23,7 @@ class Category(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__cls: str = ""
+        self.__cls: str or None = None
         self.__name: str | None = None
         super(Category, self).__init__(context)
 
@@ -35,11 +35,11 @@ class Category(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+        if type(self._context) is dict:
+            self.__cls: str = self._context.get("class")
+            self.__name: str | None = self._context.get("name")
 
-        self.__cls: str = self._context.get("class")
-        self.__name: str | None = self._context.get("name")
-
-    def get_cls(self) -> str:
+    def _get_cls(self) -> str or None:
         """
         Getter поля cls
         (Класс категории предприятия. Не обязательное поле.)
@@ -50,7 +50,7 @@ class Category(DestructObject):
 
         return self.__cls
 
-    def set_cls(self, cls: str) -> None:
+    def _set_cls(self, cls: str) -> None:
         """
         Setter поля cls
         (Класс категории предприятия. Не обязательное поле.)
@@ -63,7 +63,7 @@ class Category(DestructObject):
 
         self.__cls: str = cls
 
-    def del_cls(self) -> None:
+    def _del_cls(self) -> None:
         """
         Deleter поля cls
         (Класс категории предприятия. Не обязательное поле.)
@@ -72,9 +72,9 @@ class Category(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__cls: str = ""
+        self.__cls: str or None = None
 
-    def get_name(self) -> str:
+    def _get_name(self) -> str:
         """
         Getter поля name
         (Название категории предприятия. Обязательное поле.)
@@ -86,9 +86,9 @@ class Category(DestructObject):
         if self.__name:
             return self.__name
         else:
-            raise MissingRequiredProperty(self.set_name)
+            raise MissingRequiredProperty(self._set_name)
 
-    def set_name(self, name: str | None) -> None:
+    def _set_name(self, name: str or None) -> None:
         """
         Setter поля cls
         (Название категории предприятия. Обязательное поле.)
@@ -101,7 +101,7 @@ class Category(DestructObject):
 
         self.__name: str | None = name
 
-    def del_name(self) -> None:
+    def _del_name(self) -> None:
         """
         Deleter поля name
         (Название категории предприятия. Обязательное поле.)
@@ -112,5 +112,8 @@ class Category(DestructObject):
 
         self.__name: str | None = None
 
-    cls = property(get_cls, set_cls, del_cls, doc="")
-    name = property(get_name, set_name, del_name, doc="")
+    cls = property(_get_cls, _set_cls, _del_cls,
+                   doc="Класс категории предприятия. Не обязательное поле.")
+
+    name = property(_get_name, _set_name, _del_name,
+                    doc="Название категории предприятия. Обязательное поле.")
