@@ -1,10 +1,29 @@
 
 import unittest
-from yamaps import YaMaps
+import asyncio
 from typing import Any
+from ..yamaps import YaMaps
 
 
-class TestGeometry(unittest.TestCase):
+def async_test(f):
+    """
+    Декаратор, преобразующий async функцию в обычную для u
+
+    :type f: function
+    :param f: функция для обёртки
+    :rtype: function
+    :return: возвращает декорированную функцию
+    """
+    def wrapper(*args: Any, **kwargs: Any):
+        coro = asyncio.coroutine(f)
+        future = coro(*args, **kwargs)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(future)
+
+    return wrapper
+
+
+class TestYaMaps(unittest.TestCase):
     """
     Класс для тестирования класса YaMaps
     Запуск тестов - coverage3 run --source yamaps/ -m unittest discover yamaps -v

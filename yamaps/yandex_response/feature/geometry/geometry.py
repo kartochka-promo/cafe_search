@@ -3,8 +3,8 @@ import numpy as np
 from typing import Dict
 from typing import List
 
-from ....yandex_response.base.base import DestructObject
-from ....yandex_response.exceptions.exceptions import MissingRequiredProperty
+from ...base.base import DestructObject
+from ...exceptions.exceptions import MissingRequiredProperty
 
 
 class Geometry(DestructObject):
@@ -38,8 +38,9 @@ class Geometry(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__destruct_simple_properties()
-        self.__destruct_coordinates(self._context.get("geometry"))
+        if type(self._context) is dict:
+            self.__destruct_simple_properties()
+            self.__destruct_coordinates(self._context.get("coordinates"))
 
     def __destruct_simple_properties(self) -> None:
         """
@@ -50,7 +51,8 @@ class Geometry(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__type: str | None = self._context.get("type")
+        if type(self._context) is dict:
+            self.__type: str | None = self._context.get("type")
 
     def __destruct_coordinates(self, coordinates_context: List[float]) -> None:
         """
@@ -61,7 +63,7 @@ class Geometry(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if coordinates_context:
+        if type(coordinates_context) is list:
             self.__coordinates: type(np.array) | None = \
                 np.array(coordinates_context)
 
@@ -74,7 +76,7 @@ class Geometry(DestructObject):
         :return: возвращает значение поля type
         """
 
-        if self.__type:
+        if type(self.__type) is str:
             return self.__type
         else:
             raise MissingRequiredProperty(self._set_type)
@@ -113,7 +115,7 @@ class Geometry(DestructObject):
         :return: Возвращает точку np.array
         """
 
-        if self.__coordinates:
+        if type(self.__coordinates) is np.ndarray:
             return self.__coordinates
         else:
             raise MissingRequiredProperty(self._set_coordinates)
