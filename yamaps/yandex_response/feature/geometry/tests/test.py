@@ -42,7 +42,7 @@ class TestGeometry(unittest.TestCase):
         self.assertEqual(obj.coordinates[1], 871920.12312)
 
     def test_destruct(self):
-        """ Тест на парсинг олного контекста """
+        """ Тест на парсинг полного контекста """
 
         obj = Geometry({"type":"poper", "coordinates": [112.112, 2]})
         self.assertEqual(obj.context, {"type":"poper", "coordinates": [112.112, 2]})

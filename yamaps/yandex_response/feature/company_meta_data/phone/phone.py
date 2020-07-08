@@ -1,7 +1,7 @@
 
 from typing import Dict
-from yandex_response.base.base import DestructObject
-from yandex_response.exceptions.exceptions import MissingRequiredProperty
+from ....base.base import DestructObject
+from ....exceptions.exceptions import MissingRequiredProperty
 
 
 class Phone(DestructObject):
@@ -35,11 +35,11 @@ class Phone(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
+        if type(self._context) is dict:
+            self.__type: str = self._context.get("type")
+            self.__formatted: str | None = self._context.get("formatted")
 
-        self.__type: str = self._context.get("type")
-        self.__formatted: str | None = self._context.get("formatted")
-
-    def get_type(self) -> str:
+    def _get_type(self) -> str:
         """
         Getter поля type
         Тип контактной информации (например, телефон или факс).
@@ -50,7 +50,7 @@ class Phone(DestructObject):
 
         return self.__type
 
-    def set_type(self, type: str) -> None:
+    def _set_type(self, type: str) -> None:
         """
         Setter поля type
         Тип контактной информации (например, телефон или факс).
@@ -63,7 +63,7 @@ class Phone(DestructObject):
 
         self.__type: str = type
 
-    def del_type(self) -> None:
+    def _del_type(self) -> None:
         """
         Deleter поля type
         Тип контактной информации (например, телефон или факс).
@@ -74,7 +74,7 @@ class Phone(DestructObject):
 
         self.__type: str = ""
 
-    def get_formatted(self) -> str:
+    def _get_formatted(self) -> str:
         """
         Getter поля formatted
         (Полный номер телефона (или факса) с кодом страны и кодом города. Обязательное поле.)
@@ -86,9 +86,9 @@ class Phone(DestructObject):
         if self.__formatted:
             return self.__formatted
         else:
-            raise MissingRequiredProperty(self.set_formatted)
+            raise MissingRequiredProperty(self._set_formatted)
 
-    def set_formatted(self, formatted: str | None):
+    def _set_formatted(self, formatted: str or None) -> None:
         """
         Setter поля formatted
         (Полный номер телефона (или факса) с кодом страны и кодом города. Обязательное поле.)
@@ -101,7 +101,7 @@ class Phone(DestructObject):
 
         self.__formatted: str | None = formatted
 
-    def del_formatted(self):
+    def _del_formatted(self) -> None:
         """
         Deleter поля formatted
         (Полный номер телефона (или факса) с кодом страны и кодом города. Обязательное поле.)
@@ -112,5 +112,8 @@ class Phone(DestructObject):
 
         self.__formatted: str | None = None
 
-    type = property(get_type, set_type, del_type, doc="")
-    formatted = property(get_formatted, set_formatted, del_formatted, doc="")
+    type = property(_get_type, _set_type, _del_type,
+                    doc="Тип контактной информации (например, телефон или факс).")
+
+    formatted = property(_get_formatted, _set_formatted, _del_formatted,
+                         doc="Полный номер телефона (или факса) с кодом страны и кодом города. Обязательное поле.")
