@@ -3,11 +3,11 @@ from ..search_request import SearchRequest
 from ....exceptions.exceptions import MissingRequiredProperty
 
 
-class TestSearchResponse(unittest.TestCase):
-    """ Класс для тестирования класса SearchResponse """
+class TestSearchRequest(unittest.TestCase):
+    """ Класс для тестирования класса SearchRequest """
 
     def test_init(self):
-        """ Тест на инициализацию класса SearchResponse """
+        """ Тест на инициализацию класса SearchRequest """
         obj = SearchRequest({})
         self.assertEqual(obj.context, {})
 

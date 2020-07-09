@@ -1,7 +1,7 @@
 
 from typing import Dict
-from yandex_response.base.base import DestructObject
-from yandex_response.exceptions.exceptions import MissingRequiredProperty
+from ..base.base import DestructObject
+from ..exceptions.exceptions import MissingRequiredProperty
 from ..response_meta_data.search_request.search_request import SearchRequest
 from ..response_meta_data.search_response.search_response import SearchResponse
 
@@ -38,8 +38,9 @@ class ResponseMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__destruct_search_request(self._context.get("SearchRequest"))
-        self.__destruct_search_response(self._context.get("SearchResponse"))
+        if type(self._context) is dict:
+            self.__destruct_search_request(self._context.get("SearchRequest"))
+            self.__destruct_search_response(self._context.get("SearchResponse"))
 
     def __destruct_search_request(self, search_request_context) -> None:
         """
@@ -50,7 +51,7 @@ class ResponseMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if search_request_context:
+        if type(search_request_context) is dict:
             self.__search_request: SearchRequest | None = SearchRequest(search_request_context)
 
     def __destruct_search_response(self, search_response_context) -> None:
@@ -62,10 +63,10 @@ class ResponseMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if search_response_context:
+        if type(search_response_context) is dict:
             self.__search_response: SearchResponse | None = SearchResponse(search_response_context)
 
-    def get_search_response(self) -> SearchResponse:
+    def _get_search_response(self) -> type(SearchResponse):
         """
         Getter поля search_response
         (Метаданные, описывающие ответ. Обязательное поле.)
@@ -77,9 +78,9 @@ class ResponseMetaData(DestructObject):
         if self.__search_response:
             return self.__search_response
         else:
-            raise MissingRequiredProperty(self.set_search_response)
+            raise MissingRequiredProperty(self._set_search_response)
 
-    def set_search_response(self, search_response_context: Dict) -> None:
+    def _set_search_response(self, search_response_context: Dict) -> None:
         """
         Setter поля search_response
         (Метаданные, описывающие ответ. Обязательное поле.)
@@ -92,7 +93,7 @@ class ResponseMetaData(DestructObject):
 
         self.__destruct_search_response(search_response_context)
 
-    def del_search_response(self) -> None:
+    def _del_search_response(self) -> None:
         """
         Deleter поля search_response
         (Метаданные, описывающие ответ. Обязательное поле.)
@@ -103,7 +104,7 @@ class ResponseMetaData(DestructObject):
 
         self.__search_response: SearchResponse | None = None
 
-    def get_search_request(self) -> SearchRequest:
+    def _get_search_request(self) -> type(SearchRequest):
         """
         Getter поля search_request
         (Метаданные, описывающие запрос. Обязательное поле.)
@@ -115,9 +116,9 @@ class ResponseMetaData(DestructObject):
         if self.__search_request:
             return self.__search_request
         else:
-            raise MissingRequiredProperty(self.set_search_request)
+            raise MissingRequiredProperty(self._set_search_request)
 
-    def set_search_request(self, search_request_context: Dict) -> None:
+    def _set_search_request(self, search_request_context: Dict) -> None:
         """
         Setter поля search_request
         (Метаданные, описывающие запрос. Обязательное поле.)
@@ -130,7 +131,7 @@ class ResponseMetaData(DestructObject):
 
         self.__destruct_search_request(search_request_context)
 
-    def del_search_request(self) -> None:
+    def _del_search_request(self) -> None:
         """
         Deleter поля search_request
         (Метаданные, описывающие запрос. Обязательное поле.)
@@ -141,8 +142,8 @@ class ResponseMetaData(DestructObject):
 
         self.__search_request: SearchRequest | None = None
 
-    search_response = property(get_search_response, set_search_response, del_search_response,
+    search_response = property(_get_search_response, _set_search_response, _del_search_response,
                                doc="Метаданные, описывающие ответ. Обязательное поле.")
 
-    search_request = property(get_search_request, set_search_request, del_search_request,
+    search_request = property(_get_search_request, _set_search_request, _del_search_request,
                               doc="Метаданные, описывающие запрос. Обязательное поле.")
