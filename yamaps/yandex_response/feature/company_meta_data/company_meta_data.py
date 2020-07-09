@@ -2,12 +2,12 @@
 from typing import Dict
 from typing import List
 
-from yandex_response.base.base import DestructObject
-from yandex_response.exceptions.exceptions import MissingRequiredProperty
+from ...base.base import DestructObject
+from ...exceptions.exceptions import MissingRequiredProperty
 
-from yandex_response.company_meta_data.phone.phone import Phone
-from yandex_response.company_meta_data.category.category import Category
-from yandex_response.company_meta_data.hours.hours import Hours
+from ..company_meta_data.phone.phone import Phone
+from ..company_meta_data.category.category import Category
+from ..company_meta_data.hours.hours import Hours
 
 
 class CompanyMetaData(DestructObject):
@@ -30,13 +30,13 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__id: str | None = None
-        self.__name: str | None = None
-        self.__address: str = ""
-        self.__url: str = ""
+        self.__id: str or None = None
+        self.__name: str or None = None
+        self.__address: str or None = None
+        self.__url: str or None = None
         self.__categories: List[Category] = []
         self.__phones: List[Phone] = []
-        self.__hours: Hours | None = None
+        self.__hours: Hours or None = None
         super(CompanyMetaData, self).__init__(context)
 
     def _destruct(self) -> None:
@@ -48,10 +48,11 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__destruct_simple_properties()
-        self.__destruct_categories(self._context.get("Categories"))
-        self.__destruct_phones(self._context.get("Phones"))
-        self.__destruct_hours(self._context.get("hours"))
+        if type(self._context) is dict:
+            self.__destruct_simple_properties()
+            self.__destruct_categories(self._context.get("Categories"))
+            self.__destruct_phones(self._context.get("Phones"))
+            self.__destruct_hours(self._context.get("Hours"))
 
     def __destruct_simple_properties(self) -> None:
         """
@@ -61,11 +62,11 @@ class CompanyMetaData(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-
-        self.__id: str | None = self._context.get("id")
-        self.__name: str | None = self._context.get("name")
-        self.__address: str = self._context.get("address")
-        self.__url: str = self._context.get("url")
+        if type(self._context) is dict:
+            self.__id: str | None = self._context.get("id")
+            self.__name: str | None = self._context.get("name")
+            self.__address: str or None = self._context.get("address")
+            self.__url: str or None = self._context.get("url")
 
     def __destruct_categories(self, categories_context) -> None:
         """
@@ -76,7 +77,7 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if categories_context:
+        if type(categories_context) is list:
             self.__categories: List[Category] = [Category(category) for category in categories_context]
 
     def __destruct_phones(self, phones_context):
@@ -88,7 +89,7 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if phones_context:
+        if type(phones_context) is list:
             self.__phones: List[Phone] = [Phone(contact) for contact in phones_context]
 
     def __destruct_hours(self, hours_context):
@@ -100,10 +101,10 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if hours_context:
+        if type(hours_context) is dict:
             self.__hours: Hours = Hours(hours_context)
 
-    def get_id(self) -> str:
+    def _get_id(self) -> str:
         """
         Getter поля id
         (Идентификатор организации. Обязательное поле.)
@@ -115,9 +116,9 @@ class CompanyMetaData(DestructObject):
         if self.__id:
             return self.__id
         else:
-            raise MissingRequiredProperty(self.set_id)
+            raise MissingRequiredProperty(self._set_id)
 
-    def set_id(self, id: str | None) -> None:
+    def _set_id(self, id: str or None) -> None:
         """
         Setter поля id
         (Идентификатор организации. Обязательное поле.)
@@ -130,7 +131,7 @@ class CompanyMetaData(DestructObject):
 
         self.__id: str | None = id
 
-    def del_id(self) -> None:
+    def _del_id(self) -> None:
         """
         Deleter поля id
         (Идентификатор организации. Обязательное поле.)
@@ -141,7 +142,7 @@ class CompanyMetaData(DestructObject):
 
         self.__id: str | None = None
 
-    def get_name(self) -> str:
+    def _get_name(self) -> str:
         """
         Getter поля name
         (Название организации. Обязательное поле.)
@@ -153,9 +154,9 @@ class CompanyMetaData(DestructObject):
         if self.__name:
             return self.__name
         else:
-            raise MissingRequiredProperty(self.set_name)
+            raise MissingRequiredProperty(self._set_name)
 
-    def set_name(self, name) -> None:
+    def _set_name(self, name) -> None:
         """
         Setter поля name
         (Название организации. Обязательное поле.)
@@ -168,7 +169,7 @@ class CompanyMetaData(DestructObject):
 
         self.__name: str | None = name
 
-    def del_name(self) -> None:
+    def _del_name(self) -> None:
         """
         Deleter поля name
         (Название организации. Обязательное поле.)
@@ -179,7 +180,7 @@ class CompanyMetaData(DestructObject):
 
         self.__name: str | None = None
 
-    def get_address(self) -> str:
+    def _get_address(self) -> str:
         """
         Getter поля address
         (Адрес организации. Не обязательное поле.)
@@ -190,7 +191,7 @@ class CompanyMetaData(DestructObject):
 
         return self.__address
 
-    def set_address(self, address: str) -> None:
+    def _set_address(self, address: str or None) -> None:
         """
         Setter поля address
         (Адрес организации. Не обязательное поле.)
@@ -203,7 +204,7 @@ class CompanyMetaData(DestructObject):
 
         self.__address: str = address
 
-    def del_address(self) -> None:
+    def _del_address(self) -> None:
         """
         Deleter поля address
         (Адрес организации. Не обязательное поле.)
@@ -212,9 +213,9 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__address: str = ""
+        self.__address: str or None = None
 
-    def get_url(self) -> str:
+    def _get_url(self) -> str:
         """
         Getter поля url
         (Ссылка на сайт организации. Не обязательное поле.)
@@ -225,7 +226,7 @@ class CompanyMetaData(DestructObject):
 
         return self.__url
 
-    def set_url(self, url: str) -> None:
+    def _set_url(self, url: str or None) -> None:
         """
         Setter поля url
         (Ссылка на сайт организации. Не обязательное поле.)
@@ -236,9 +237,9 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__url: str = url
+        self.__url: str or None = url
 
-    def del_url(self) -> None:
+    def _del_url(self) -> None:
         """
         Deleter поля url
         (Ссылка на сайт организации. Не обязательное поле.)
@@ -247,9 +248,9 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__url: str = ""
+        self.__url: str or None = None
 
-    def get_categories(self) -> List[Category]:
+    def _get_categories(self) -> List[Category]:
         """
         Getter поля categories
         (Список категорий, в которые входит организация.)
@@ -260,7 +261,7 @@ class CompanyMetaData(DestructObject):
 
         return self.__categories
 
-    def set_categories(self, categories: List[Dict]):
+    def _set_categories(self, categories: List[Dict]):
         """
         Setter поля categories
         (Список категорий, в которые входит организация.)
@@ -273,7 +274,7 @@ class CompanyMetaData(DestructObject):
 
         self.__destruct_categories(categories)
 
-    def del_categories(self) -> None:
+    def _del_categories(self) -> None:
         """
         Deleter поля categories
         (Список категорий, в которые входит организация.)
@@ -284,7 +285,7 @@ class CompanyMetaData(DestructObject):
 
         self.__categories: List[Category] = []
 
-    def get_phones(self) -> List[Phone]:
+    def _get_phones(self) -> List[Phone]:
         """
         Getter поля phones
         (Cписок телефонных номеров организации и другая контактная информация.)
@@ -295,7 +296,7 @@ class CompanyMetaData(DestructObject):
 
         return self.__phones
 
-    def set_phones(self, phones: List[Dict]):
+    def _set_phones(self, phones: List[Dict]):
         """
         Setter поля phones
         (Список телефонных номеров организации и другая контактная информация.)
@@ -308,7 +309,7 @@ class CompanyMetaData(DestructObject):
 
         self.__destruct_phones(phones)
 
-    def del_phones(self) -> None:
+    def _del_phones(self) -> None:
         """
         Deleter поля phones
         (Список телефонных номеров организации и другая контактная информация.)
@@ -319,7 +320,7 @@ class CompanyMetaData(DestructObject):
 
         self.__phones: List[Phone] = []
 
-    def get_hours(self) -> Hours | None:
+    def _get_hours(self) -> Hours or None:
         """
         Getter поля hours
         (Режим работы организации.)
@@ -330,7 +331,7 @@ class CompanyMetaData(DestructObject):
 
         return self.__hours
 
-    def set_hours(self, hours: List[Dict]) -> None:
+    def _set_hours(self, hours: List[Dict]) -> None:
         """
         Setter поля hours
         (Режим работы организации.)
@@ -343,7 +344,7 @@ class CompanyMetaData(DestructObject):
 
         self.__destruct_hours(hours)
 
-    def del_hours(self):
+    def _del_hours(self):
         """
         Deleter поля hours
         (Режим работы организации.)
@@ -352,12 +353,25 @@ class CompanyMetaData(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__hours: Hours | None = None
+        self.__hours: Hours or None = None
 
-    id = property(get_id, set_id, del_id, doc="")
-    name = property(get_name, set_name, del_name, doc="")
-    address = property(get_address, set_address, del_address, doc="")
-    url = property(get_url, set_url, del_url, doc="")
-    categories = property(get_categories, set_categories, del_categories, doc="")
-    phones = property(get_phones, set_phones, del_phones, doc="")
-    hours = property(get_hours, set_hours, del_hours, doc="")
+    id = property(_get_id, _set_id, _del_id,
+                  doc="Идентификатор организации. Обязательное поле.")
+
+    name = property(_get_name, _set_name, _del_name,
+                    doc="Название организации. Обязательное поле.")
+
+    address = property(_get_address, _set_address, _del_address,
+                       doc="Адрес организации. Не обязательное поле.")
+
+    url = property(_get_url, _set_url, _del_url,
+                   doc="Ссылка на сайт организации. Не обязательное поле.")
+
+    categories = property(_get_categories, _set_categories, _del_categories,
+                          doc="Список категорий, в которые входит организация.")
+
+    phones = property(_get_phones, _set_phones, _del_phones,
+                      doc="Список телефонных номеров организации и другая контактная информация.")
+
+    hours = property(_get_hours, _set_hours, _del_hours,
+                     doc="Режим работы организации.")
