@@ -40,8 +40,9 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__destruct_simple_properties()
-        self.__destruct_bound(self._context.get("boundedBy"))
+        if type(self._context) is dict:
+            self.__destruct_simple_properties()
+            self.__destruct_bound(self._context.get("boundedBy"))
 
     def __destruct_simple_properties(self) -> None:
         """
@@ -52,8 +53,9 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__found: int | None = self._context.get("found")
-        self.__display: str | None = self._context.get("display")
+        if type(self._context) is dict:
+            self.__found: int | None = self._context.get("found")
+            self.__display: str | None = self._context.get("display")
 
     def __destruct_bound(self, bounded_by: List[List[float]]) -> None:
         """
@@ -64,10 +66,10 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if bounded_by:
+        if type(bounded_by) is list:
             self.__bounded_by = [np.array(point) for point in bounded_by]
 
-    def get_found(self) -> int:
+    def _get_found(self) -> int:
         """
         Getter поля found
         (Количество найденных объектов. Обязательное поле.)
@@ -79,9 +81,9 @@ class SearchResponse(DestructObject):
         if self.__found:
             return self.__found
         else:
-            raise MissingRequiredProperty(self.set_found)
+            raise MissingRequiredProperty(self._set_found)
 
-    def set_found(self, found: int | None) -> None:
+    def _set_found(self, found: int or None) -> None:
         """
         Setter поля search_response
         (Количество найденных объектов. Обязательное поле.)
@@ -94,7 +96,7 @@ class SearchResponse(DestructObject):
 
         self.__found: int | None = found
 
-    def del_found(self) -> None:
+    def _del_found(self) -> None:
         """
         Deleter поля found
         (Количество найденных объектов. Обязательное поле.)
@@ -105,7 +107,7 @@ class SearchResponse(DestructObject):
 
         self.__found: int | None = None
 
-    def get_bounded_by(self) -> List[np.array]:
+    def _get_bounded_by(self) -> List[np.array]:
         """
         Getter поля bounded_by
         (Границы области показа найденных объектов.
@@ -118,7 +120,7 @@ class SearchResponse(DestructObject):
 
         return self.__bounded_by
 
-    def set_bounded_by(self, bounded_by: List[List[float]]):
+    def _set_bounded_by(self, bounded_by: List[List[float]]):
         """
         Setter поля search_response
         (Границы области показа найденных объектов.
@@ -133,7 +135,7 @@ class SearchResponse(DestructObject):
 
         self.__destruct_bound(bounded_by)
 
-    def del_bounded_by(self) -> None:
+    def _del_bounded_by(self) -> None:
         """
         Deleter поля bounded_by
         (Границы области показа найденных объектов.
@@ -146,7 +148,7 @@ class SearchResponse(DestructObject):
 
         self.__bounded_by: List[np.array] = []
 
-    def get_display(self) -> str | None:
+    def _get_display(self) -> str or None:
         """
         Getter поля display
         (Рекомендации по отображению результатов поиска)
@@ -157,7 +159,7 @@ class SearchResponse(DestructObject):
 
         return self.__display
 
-    def set_display(self, display: str | None) -> None:
+    def _set_display(self, display: str or None) -> None:
         """
         Setter поля display
         (Рекомендации по отображению результатов поиска)
@@ -170,7 +172,7 @@ class SearchResponse(DestructObject):
 
         self.__display: str | None = display
 
-    def del_display(self) -> None:
+    def _del_display(self) -> None:
         """
         Deleter поля display
         (Рекомендации по отображению результатов поиска)
@@ -181,11 +183,11 @@ class SearchResponse(DestructObject):
 
         self.__display: str | None = None
 
-    found = property(get_found, set_found, del_found,
+    found = property(_get_found, _set_found, _del_found,
                      doc="Количество найденных объектов. Обязательное поле.")
 
-    bounded_by = property(get_bounded_by, set_bounded_by, del_bounded_by,
+    bounded_by = property(_get_bounded_by, _set_bounded_by, _del_bounded_by,
                           doc="Границы области показа найденных объектов")
 
-    display = property(get_display, set_display, del_display,
+    display = property(_get_display, _set_display, _del_display,
                        doc="Рекомендации по отображению результатов поиска")

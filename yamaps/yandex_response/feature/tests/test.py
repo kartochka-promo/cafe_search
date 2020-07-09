@@ -7,10 +7,10 @@ from ..geometry.geometry import Geometry
 
 
 class TestFeature(unittest.TestCase):
-    """ Класс для тестирования класса Availability """
+    """ Класс для тестирования класса Feature """
 
     def test_init(self):
-        """ Тест на инициализацию класса Geometry """
+        """ Тест на инициализацию класса Feature """
         obj = Feature({})
         self.assertEqual(obj.context, {})
 
