@@ -40,10 +40,12 @@ class YandexResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        properties: Dict = self._context.get("properties")
-        if properties:
-            self.__destruct_response_meta_data(properties.get("ResponseMetaData"))
-        self.__destruct_features(self._context.get("features"))
+        if type(self._context) is dict:
+            properties: Dict = self._context.get("properties")
+            if type(properties) is dict:
+                self.__destruct_response_meta_data(properties.get("ResponseMetaData"))
+
+            self.__destruct_features(self._context.get("features"))
 
     def __destruct_response_meta_data(self, response_meta_data_context) -> None:
         """
@@ -54,7 +56,7 @@ class YandexResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if response_meta_data_context:
+        if type(response_meta_data_context) is dict:
             self.__response_meta_data: ResponseMetaData | None = ResponseMetaData(response_meta_data_context)
 
     def __destruct_features(self, features_context: Dict) -> None:
@@ -66,10 +68,10 @@ class YandexResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if features_context:
+        if type(features_context) is list:
             self.__features: List[Feature] = [Feature(feature) for feature in features_context]
 
-    def get_response_meta_data(self) -> ResponseMetaData:
+    def _get_response_meta_data(self) -> ResponseMetaData:
         """
         Getter поля response_meta_data
         (Метаданные, описывающие запрос и ответ. Обязательное поле.)
@@ -81,9 +83,9 @@ class YandexResponse(DestructObject):
         if self.__response_meta_data:
             return self.__response_meta_data
         else:
-            raise MissingRequiredProperty(self.set_response_meta_data)
+            raise MissingRequiredProperty(self._set_response_meta_data)
 
-    def set_response_meta_data(self, response_meta_data: Dict) -> None:
+    def _set_response_meta_data(self, response_meta_data: Dict) -> None:
         """
         Setter поля response_meta_data
         (Метаданные, описывающие запрос и ответ. Обязательное поле.)
@@ -96,7 +98,7 @@ class YandexResponse(DestructObject):
 
         self.__destruct_response_meta_data(response_meta_data)
 
-    def del_response_meta_data(self) -> None:
+    def _del_response_meta_data(self) -> None:
         """
         Deleter поля response_meta_data
         (Метаданные, описывающие запрос и ответ. Обязательное поле.)
@@ -107,7 +109,7 @@ class YandexResponse(DestructObject):
 
         self.__response_meta_data: ResponseMetaData | None = None
 
-    def get_features(self) -> List[Feature]:
+    def _get_features(self) -> List[Feature]:
         """
         Getter поля features
         (Контейнер результатов поиска. Обязательное поле.)
@@ -119,9 +121,9 @@ class YandexResponse(DestructObject):
         if self.__features:
             return self.__features
         else:
-            raise MissingRequiredProperty(self.set_features)
+            raise MissingRequiredProperty(self._set_features)
 
-    def set_features(self, features: Dict) -> None:
+    def _set_features(self, features: Dict) -> None:
         """
         Setter поля response_meta_data
         (Контейнер результатов поиска. Обязательное поле.)
@@ -134,7 +136,7 @@ class YandexResponse(DestructObject):
 
         self.__destruct_features(features)
 
-    def del_features(self) -> None:
+    def _del_features(self) -> None:
         """
         Deleter поля features
         (Контейнер результатов поиска. Обязательное поле.)
@@ -145,8 +147,8 @@ class YandexResponse(DestructObject):
 
         self.__features: List[Feature] = []
 
-    response_meta_data = property(get_response_meta_data, set_response_meta_data, del_response_meta_data,
+    response_meta_data = property(_get_response_meta_data, _set_response_meta_data, _del_response_meta_data,
                                   doc="Метаданные, описывающие запрос и ответ. Обязательное поле.")
 
-    features = property(get_features, set_features, del_features,
+    features = property(_get_features, _set_features, _del_features,
                         doc="(Контейнер результатов поиска. Обязательное поле.")
