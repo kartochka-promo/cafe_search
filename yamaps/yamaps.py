@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+from yandex_response.yandex_response import YandexResponse
 
 
 class YaMaps:
@@ -81,7 +82,7 @@ class YaMaps:
         request: str = "".join([f"&{key}={value}" for key, value in kwargs.items()])
         return self._url + request
 
-    async def request(self, **kwargs: str) -> dict:
+    async def request(self, **kwargs: str) -> YandexResponse:
         """
         Метод, реализующий запрос к api yandex maps
         Список всех ключей и возможных параметров и требуемый ответ от сервера
@@ -96,7 +97,7 @@ class YaMaps:
 
         request: str = self._generate_request(**kwargs)
         async with self._session.get(request) as resp:
-            return await resp.json()
+            return YandexResponse(await resp.json())
 
 
 #Testing
