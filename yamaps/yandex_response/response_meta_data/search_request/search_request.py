@@ -41,8 +41,9 @@ class SearchRequest(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__destruct_simple_properties()
-        self.__destruct_bound(self._context.get("boundedBy"))
+        if type(self._context) is dict:
+            self.__destruct_simple_properties()
+            self.__destruct_bound(self._context.get("boundedBy"))
 
     def __destruct_simple_properties(self) -> None:
         """
@@ -52,10 +53,10 @@ class SearchRequest(DestructObject):
         :rtype: None
         :return: Ничего не возвращает
         """
-
-        self.__request: str | None = self._context.get("request")
-        self.__results: int | None = self._context.get("results")
-        self.__skip: int | None = self._context.get("skip")
+        if type(self._context) is dict:
+            self.__request: str | None = self._context.get("request")
+            self.__results: int | None = self._context.get("results")
+            self.__skip: int | None = self._context.get("skip")
 
     def __destruct_bound(self, bounded_by: List[List[int]]) -> None:
         """
@@ -66,10 +67,10 @@ class SearchRequest(DestructObject):
         :return: Ничего не возвращает
         """
 
-        if bounded_by:
+        if type(bounded_by) is list:
             self.__bounded_by = [np.array(point) for point in bounded_by]
 
-    def get_request(self) -> str:
+    def _get_request(self) -> str:
         """
         Getter поля request
         (Строка запроса. Обязательное поле.)
@@ -81,9 +82,9 @@ class SearchRequest(DestructObject):
         if self.__request:
             return self.__request
         else:
-            raise MissingRequiredProperty(self.set_request)
+            raise MissingRequiredProperty(self._set_request)
 
-    def set_request(self, request: str | None) -> None:
+    def _set_request(self, request: str or None) -> None:
         """
         Setter поля request
         (Строка запроса. Обязательное поле.)
@@ -96,7 +97,7 @@ class SearchRequest(DestructObject):
 
         self.__request: str | None = request
 
-    def del_request(self) -> None:
+    def _del_request(self) -> None:
         """
         Deleter поля request
         (Строка запроса. Обязательное поле.)
@@ -107,7 +108,7 @@ class SearchRequest(DestructObject):
 
         self.__request: str | None = None
 
-    def get_results(self) -> int | None:
+    def _get_results(self) -> int or None:
         """
         Getter поля results
         (Максимальное количество возвращаемых результатов. Не обязательное поле.)
@@ -118,7 +119,7 @@ class SearchRequest(DestructObject):
 
         return self.__results
 
-    def set_results(self, results: int | None) -> None:
+    def _set_results(self, results: int or None) -> None:
         """
         Setter поля results
         (Максимальное количество возвращаемых результатов. Не обязательное поле.)
@@ -131,7 +132,7 @@ class SearchRequest(DestructObject):
 
         self.__results: int | None = results
 
-    def del_results(self) -> None:
+    def _del_results(self) -> None:
         """
         Deleter поля results
         (Максимальное количество возвращаемых результатов. Не обязательное поле.)
@@ -142,7 +143,7 @@ class SearchRequest(DestructObject):
 
         self.__results: int | None = None
 
-    def get_skip(self) -> int | None:
+    def _get_skip(self) -> int or None:
         """
         Getter поля skip
         (Количество пропускаемых результатов. Не обязательное поле.)
@@ -153,7 +154,7 @@ class SearchRequest(DestructObject):
 
         return self.__skip
 
-    def set_skip(self, skip: int | None) -> None:
+    def _set_skip(self, skip: int or None) -> None:
         """
         Setter поля skip
         (Количество пропускаемых результатов. Не обязательное поле.)
@@ -166,7 +167,7 @@ class SearchRequest(DestructObject):
 
         self.__skip: int | None = skip
 
-    def del_skip(self) -> None:
+    def _del_skip(self) -> None:
         """
         Deleter поля skip
         (Количество пропускаемых результатов. Не обязательное поле.)
@@ -177,7 +178,7 @@ class SearchRequest(DestructObject):
 
         self.__skip: int | None = None
 
-    def get_bounded_by(self) -> List[np.array]:
+    def _get_bounded_by(self) -> List[np.array]:
         """
         Getter поля bounded_by
         (Границы области, в которой предположительно находятся искомые объекты.
@@ -192,7 +193,7 @@ class SearchRequest(DestructObject):
 
         return self.__bounded_by
 
-    def set_bounded_by(self, bounded_by: List[List[int]]) -> None:
+    def _set_bounded_by(self, bounded_by: List[List[int]]) -> None:
         """
         Setter поля bounded_by
         (Границы области, в которой предположительно находятся искомые объекты.
@@ -209,7 +210,7 @@ class SearchRequest(DestructObject):
 
         self.__destruct_bound(bounded_by)
 
-    def del_bounded_by(self) -> None:
+    def _del_bounded_by(self) -> None:
         """
         Deleter поля bounded_by
         (Границы области, в которой предположительно находятся искомые объекты.
@@ -224,14 +225,14 @@ class SearchRequest(DestructObject):
 
         self.__bounded_by: List[np.array] = []
 
-    request = property(get_request, set_request, del_request,
+    request = property(_get_request, _set_request, _del_request,
                        doc="Строка запроса. Обязательное поле.")
 
-    results = property(get_results, set_results, del_results,
+    results = property(_get_results, _set_results, _del_results,
                        doc="Максимальное количество возвращаемых результатов. Не обязательное поле.")
 
-    skip = property(get_skip, set_skip, del_skip,
+    skip = property(_get_skip, _set_skip, _del_skip,
                     doc="Количество пропускаемых результатов. Не обязательное поле.")
 
-    bounded_by = property(get_bounded_by, set_bounded_by, del_bounded_by,
+    bounded_by = property(_get_bounded_by, _set_bounded_by, _del_bounded_by,
                           doc="Границы области, в которой предположительно находятся искомые объекты.")
