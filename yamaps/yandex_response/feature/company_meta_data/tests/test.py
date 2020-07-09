@@ -107,6 +107,39 @@ class TestHours(unittest.TestCase):
         self.assertIs(type(obj.hours), Hours)
         self.assertEqual(obj.hours.text, 'пн-пт 9:00–18:00, перерыв 13:00–14:00')
 
+    def test_destruct(self):
+        obj = CompanyMetaData({'id': '212658931246',
+                               'name': 'Алмазарский отдел по делам обороны',
+                               'address': 'Узбекистан, Ташкент, Ташкент г., Бабаджанова улица, 14',
+                               'Phones': [
+                                   {'type': 'phone', 'formatted': '+998 71 248 24 00'},
+                                   {'type': 'phone', 'formatted': '+998 71 248 25 21'}
+                               ],
+                               'Categories': [{'class': 'police', 'name': 'Военкомат'}]
+                               })
+
+        self.assertEqual(obj.context, {'id': '212658931246',
+                                       'name': 'Алмазарский отдел по делам обороны',
+                                       'address': 'Узбекистан, Ташкент, Ташкент г., Бабаджанова улица, 14',
+                                       'Phones': [
+                                           {'type': 'phone', 'formatted': '+998 71 248 24 00'},
+                                           {'type': 'phone', 'formatted': '+998 71 248 25 21'}
+                                       ],
+                                       'Categories': [{'class': 'police', 'name': 'Военкомат'}]
+                                       })
+
+        self.assertEqual(obj.id, '212658931246')
+        self.assertEqual(obj.name, 'Алмазарский отдел по делам обороны')
+        self.assertEqual(obj.address, 'Узбекистан, Ташкент, Ташкент г., Бабаджанова улица, 14')
+        self.assertEqual(obj.url, None)
+
+        self.assertIs(type(obj.categories), list)
+        self.assertEqual(len(obj.categories), 1)
+
+        self.assertIs(type(obj.phones), list)
+        self.assertEqual(len(obj.phones), 2)
+        self.assertIs(obj.hours, None)
+
     def test_getters(self):
         """ Тест, проверяющий работу getters """
 
