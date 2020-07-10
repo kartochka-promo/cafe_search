@@ -1,6 +1,6 @@
 import aiohttp
 import asyncio
-from yandex_response.yandex_response import YandexResponse
+from .yandex_response.yandex_response import YandexResponse
 
 
 class YaMaps:
@@ -45,7 +45,7 @@ class YaMaps:
         """
         await self._session.close()
 
-    async def __aenter__(self) -> object:
+    async def __aenter__(self):
         """
         Метод, определяющий, что происходит при вызове async with
         В данном случае происходит открытие сессии aiohttp
@@ -98,7 +98,8 @@ class YaMaps:
         request: str = self._generate_request(**kwargs)
         async with self._session.get(request) as resp:
             return YandexResponse(await resp.json())
-
+            #out = YandexResponse(await resp.json())
+            #return out.response_meta_data.search_response.found
 
 #Testing
 # async def test():

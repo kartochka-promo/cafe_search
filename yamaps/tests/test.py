@@ -2,7 +2,7 @@
 import unittest
 import asyncio
 from typing import Any
-from yamaps import YaMaps
+from ..yamaps import YaMaps
 
 
 def async_test(f):
