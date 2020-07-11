@@ -99,8 +99,7 @@ class YaMaps:
         async with self._session.get(request) as resp:
             return YandexResponse(await resp.json())
             #out = YandexResponse(await resp.json())
-            #return out.response_meta_data.search_response.found
-
+            #out.features[0].company_meta_data.
 #Testing
 # async def test():
 #     async with YaMaps("12b9aefc-0d5e-49ae-bfe2-75ee6cb61816") as yamap:

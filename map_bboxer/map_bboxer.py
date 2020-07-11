@@ -1,6 +1,5 @@
 
 import asyncio
-from yamaps.yamaps import YaMaps
 from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
@@ -13,7 +12,7 @@ class MapBboxer:
         self.__bbox_threshold = bbox_threshold
         self.__max_workers_count = max_workers_count
         self.__queue = asyncio.Queue()
-        self._out_queue = asyncio.Queue()
+        self.__out_queue = asyncio.Queue()
         self.__futures = []
 
     async def start_bboxing(self):
@@ -21,7 +20,7 @@ class MapBboxer:
         await self.__generate_worker()
 
         done = []
-        while len(done) != len(self.__futures):
+        while len(done) != len(self.__futures):             #TODO наверное можно лучше
             done, _ = await asyncio.wait(self.__futures)
 
     async def __generate_worker(self):
@@ -32,7 +31,6 @@ class MapBboxer:
         while not self.__queue.empty():
             bbox = await self.__queue.get()
             objects_count = await self.__get_objects_in_bbox(bbox)
-            print(objects_count)
 
             if objects_count > self.__bbox_threshold:
                 split_bbox = await self.__split_bbox(bbox)
@@ -41,7 +39,7 @@ class MapBboxer:
                 await self.__generate_worker()
 
             else:
-                await self._out_queue.put(bbox)
+                await self.__out_queue.put(bbox)
 
     async def __split_bbox(self, bbox):
         x_distance = bbox[1][0] - bbox[0][0]
@@ -79,22 +77,13 @@ class MapBboxer:
 
         return [lower_shard, higher_shard]
 
+    async def get_out_queue(self):  #TODO pretty getters
+        return self.__out_queue
 
-# async def test():
-#     async with YaMaps("37b33a30-d0da-4053-aee9-07230f897a46") as yamap:
-#         request_params = {
-#             "text": "Кофейни",
-#             "lang": "ru_RU",
-#             "type": "biz",
-#             "rspn": "1",
-#             "results": "500"
-#         }
-#         bbox = [[37.048427, 55.43644866], [38.175903, 56.04690174]]
-#
-#         bboxer = MapBboxer(yamap, request_params, bbox)
-#         await bboxer.start_bboxing()
-#         while not bboxer._out_queue.empty():
-#             print(await bboxer._out_queue.get())
-#
-# loop = asyncio.get_event_loop()
-# result = loop.run_until_complete(test())
+    async def get_out_list(self):   #TODO pretty getters
+        out_list = []
+        while not self.__out_queue.empty():
+            bbox = await self.__out_queue.get()
+            out_list.append(bbox)
+
+        return out_list
