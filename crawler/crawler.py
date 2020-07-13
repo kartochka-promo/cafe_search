@@ -11,9 +11,8 @@ from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 class Crawler:
 
-    def __init__(self, lead_db, minor_db, yamap, request_params, bbox, max_workers_count=16):
-        self.__lead_db = lead_db
-        self.__minor_db = minor_db
+    def __init__(self, db, yamap, request_params, bbox, max_workers_count=16):
+        self.__db = db
         self.__yamap = yamap
         self.__request_params = request_params
         self.__bbox = bbox
@@ -21,7 +20,6 @@ class Crawler:
         self.__bbox_queue = asyncio.Queue()
         self.__features_queue = asyncio.Queue()
         self.__new_objects_queue = asyncio.Queue()
-        self.__db_control_setup()
 
     async def run(self):
         print("Start Bboxing")
@@ -33,19 +31,6 @@ class Crawler:
         print("run_bbox_workers OK")
         await self.__run_feature_workers()
         print("run_feature_workers OK")
-        self.__db_finalize()
-        print("swap_db OK")
-
-    def __db_control_setup(self):
-        if self.__minor_db.dbsize() > self.__lead_db.dbsize():
-            self.__swap_db()
-
-    def __db_finalize(self):
-        self.__lead_db.flushdb()
-        self.__swap_db()
-
-    def __swap_db(self):
-        self.__lead_db, self.__minor_db = self.__minor_db, self.__lead_db
 
     async def __run_feature_workers(self):
         workers = [self.__feature_worker() for _ in range(self.__max_workers_count)]
@@ -68,10 +53,9 @@ class Crawler:
                 print("Oopse", e)                           #TOOD loggining
 
     async def __handle_feature(self, feature):
-        if not self.__lead_db.exists(feature.company_meta_data.id):
+        if not self.__db.exists(feature.company_meta_data.id):
             await self.__new_objects_queue.put(feature)
-
-        self.__minor_db.set(feature.company_meta_data.id, pickle.dumps(feature))
+            self.__db.set(feature.company_meta_data.id, pickle.dumps(feature))
 
     async def __run_bbox_workers(self):
         workers_futures = [self.__bbox_worker() for _ in range(self.__max_workers_count)]
@@ -101,9 +85,9 @@ class Crawler:
         return map_bboxing
 
     async def __load_map_bboxing(self):
-        map_bboxing_pickle = self.__lead_db.get("map_bboxing")
+        map_bboxing_pickle = self.__db.get("map_bboxing")
         if map_bboxing_pickle:
-            self.__lead_db.set("map_bboxing", map_bboxing_pickle)
+            self.__db.set("map_bboxing", map_bboxing_pickle)
             return pickle.loads(map_bboxing_pickle)
         return []
 
@@ -118,8 +102,7 @@ class Crawler:
     async def __set_map_bboxing(self, map_bboxing):
         if type(map_bboxing) is list:
             pickle_map_bboxing = pickle.dumps(map_bboxing)
-            self.__lead_db.set("map_bboxing", pickle_map_bboxing)
-            self.__minor_db.set("map_bboxing", pickle_map_bboxing)
+            self.__db.set("map_bboxing", pickle_map_bboxing)
 
     async def get_new_objects_queue(self): #TODO normal getter
         return self.__new_objects_queue
