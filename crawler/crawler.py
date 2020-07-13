@@ -108,12 +108,9 @@ class Crawler:
         return self.__new_objects_queue
 
     async def get_new_objects_list(self):
-        out_list = []
-        while not self.__new_objects_queue.empty():
-            obj = await self.__new_objects_queue.get()
-            out_list.append(obj)
 
-        return out_list
+        futures = [self.__new_objects_queue.get() for _ in range(self.__new_objects_queue.qsize())]
+        return await asyncio.gather(*futures)
 
 
 

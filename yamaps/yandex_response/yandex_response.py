@@ -27,7 +27,7 @@ class YandexResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__response_meta_data: ResponseMetaData | None = None
+        self.__response_meta_data: ResponseMetaData or None = None
         self.__features: List[Feature] = []
         super(YandexResponse, self).__init__(context)
 
@@ -57,7 +57,7 @@ class YandexResponse(DestructObject):
         """
 
         if type(response_meta_data_context) is dict:
-            self.__response_meta_data: ResponseMetaData | None = ResponseMetaData(response_meta_data_context)
+            self.__response_meta_data: ResponseMetaData or None = ResponseMetaData(response_meta_data_context)
 
     def __destruct_features(self, features_context: Dict) -> None:
         """
@@ -107,7 +107,7 @@ class YandexResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__response_meta_data: ResponseMetaData | None = None
+        self.__response_meta_data: ResponseMetaData or None = None
 
     def _get_features(self) -> List[Feature]:
         """
