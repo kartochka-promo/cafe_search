@@ -7,6 +7,7 @@ from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 from yamaps.yamaps import YaMaps
 from yamaps.yandex_response.yandex_response import YandexResponse
 
+
 class MapBboxer:
     """
     Класс, который производит разбиение прямоугольного сектора (bbox)
@@ -16,7 +17,7 @@ class MapBboxer:
     def __init__(self, yamap: YaMaps, request_params: Dict, bbox: List[List[float]],
                  bbox_threshold: int = 500, max_workers_count: int = 32) -> None:
         """
-        Конструктор класса YandexResponse
+        Конструктор класса MapBboxer
 
         :type yamap: YaMaps
         :param yamap: объект для отправки запросов к YandexApi
