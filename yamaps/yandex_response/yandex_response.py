@@ -2,10 +2,10 @@
 from typing import Dict
 from typing import List
 
-from .base.base import DestructObject
-from .exceptions.exceptions import MissingRequiredProperty
-from .response_meta_data.response_meta_data import ResponseMetaData
-from .feature.feature import Feature
+from yamaps.yandex_response.base.base import DestructObject
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.response_meta_data.response_meta_data import ResponseMetaData
+from yamaps.yandex_response.feature.feature import Feature
 
 
 class YandexResponse(DestructObject):

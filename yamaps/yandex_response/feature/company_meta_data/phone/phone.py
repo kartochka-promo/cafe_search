@@ -1,7 +1,7 @@
 
 from typing import Dict
-from ....base.base import DestructObject
-from ....exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.base.base import DestructObject
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class Phone(DestructObject):

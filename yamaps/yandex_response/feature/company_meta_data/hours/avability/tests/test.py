@@ -1,5 +1,5 @@
 
-from ..avability import Availability
+from yamaps.yandex_response.feature.company_meta_data.hours.avability.avability import Availability
 import unittest
 
 

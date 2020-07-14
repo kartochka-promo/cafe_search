@@ -2,7 +2,7 @@
 from typing import Dict
 from typing import List
 from typing import Set
-from .....base.base import DestructObject
+from yamaps.yandex_response.base.base import DestructObject
 
 
 class Availability(DestructObject):

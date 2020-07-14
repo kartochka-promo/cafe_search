@@ -1,5 +1,6 @@
+
 import unittest
-from ..exceptions import MissingRequiredProperty
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class TestMissingRequiredProperty(unittest.TestCase):

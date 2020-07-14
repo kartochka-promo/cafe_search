@@ -9,7 +9,7 @@ from crawler.crawler import Crawler
 
 
 redis_db_0 = redis.StrictRedis(host='localhost', port=6379, db=0)
-ya_api_key = "your yandex api key here"
+ya_api_key = ""
 request_params = {
             "text": "Кофейни",
             "lang": "ru_RU",
@@ -32,7 +32,7 @@ nice_answers = ["it was something",
                 "I love potatoes and you?"]
 
 
-telegram_token = "BOT TOKEN HERE"
+telegram_token = ""
 bot = Bot(token=telegram_token)
 dp = Dispatcher(bot)
 
@@ -49,12 +49,15 @@ async def send_welcome(message: types.Message):
 @dp.message_handler(commands=['clear'])
 async def send_clear(message: types.Message):
     async with YaMaps(ya_api_key) as yamap:
+        await message.reply("OK! \n")
         redis_db_0.flushdb()
+        await message.reply("It is now clear.\n"
+                            "But i need to update new data.\n"
+                            "Please waite a minute. \n")
         ya_crawler = Crawler(redis_db_0, yamap, request_params, bbox)
         await ya_crawler.run()
-
-    await message.reply("OK! \n"
-                        "It is now clear \n")
+        await message.reply("OK! It is done.\n")
+        await message.reply(nice_answers[randrange(11)])
 
 
 @dp.message_handler(commands=['run'])
@@ -68,6 +71,9 @@ async def send_run(message: types.Message):
         if type(new_objects) == list and len(new_objects) > 0:
             await message.reply("Yay! \n"
                                 "I am find something.\n")
+        else:
+            await message.reply("Oh no way! \n"
+                                "I did not find anything ;(\n")
 
         futures = [message.reply(f"Name: {obj.company_meta_data.name}\n"
                                  f"Address: {obj.company_meta_data.address}\n"

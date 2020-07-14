@@ -3,8 +3,8 @@ from typing import List
 from typing import Dict
 import numpy as np
 
-from ...base.base import DestructObject
-from ...exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.base.base import DestructObject
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class SearchResponse(DestructObject):
@@ -26,8 +26,8 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__found: int | None = None
-        self.__display: str | None = None
+        self.__found: int or None = None
+        self.__display: str or None = None
         self.__bounded_by: List[np.array] = []
         super(SearchResponse, self).__init__(context)
 
@@ -54,8 +54,8 @@ class SearchResponse(DestructObject):
         """
 
         if type(self._context) is dict:
-            self.__found: int | None = self._context.get("found")
-            self.__display: str | None = self._context.get("display")
+            self.__found: int or None = self._context.get("found")
+            self.__display: str or None = self._context.get("display")
 
     def __destruct_bound(self, bounded_by: List[List[float]]) -> None:
         """
@@ -94,7 +94,7 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__found: int | None = found
+        self.__found: int or None = found
 
     def _del_found(self) -> None:
         """
@@ -105,7 +105,7 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__found: int | None = None
+        self.__found: int or None = None
 
     def _get_bounded_by(self) -> List[np.array]:
         """
@@ -170,7 +170,7 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__display: str | None = display
+        self.__display: str or None = display
 
     def _del_display(self) -> None:
         """
@@ -181,7 +181,7 @@ class SearchResponse(DestructObject):
         :return: Ничего не возвращает
         """
 
-        self.__display: str | None = None
+        self.__display: str or None = None
 
     found = property(_get_found, _set_found, _del_found,
                      doc="Количество найденных объектов. Обязательное поле.")

@@ -1,6 +1,6 @@
+
 import aiohttp
-import asyncio
-from .yandex_response.yandex_response import YandexResponse
+from yamaps.yandex_response.yandex_response import YandexResponse
 
 
 class YaMaps:
@@ -98,11 +98,3 @@ class YaMaps:
         request: str = self._generate_request(**kwargs)
         async with self._session.get(request) as resp:
             return YandexResponse(await resp.json())
-            #out = YandexResponse(await resp.json())
-#Testing
-# async def test():
-#     async with YaMaps("12b9aefc-0d5e-49ae-bfe2-75ee6cb61816") as yamap:
-#         print(await yamap.request(text="Военкомат", lang="ru_RU"))
-#
-# loop = asyncio.get_event_loop()
-# result = loop.run_until_complete(test())

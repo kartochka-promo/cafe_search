@@ -1,5 +1,6 @@
+
 import unittest
-from ..base import DestructObject
+from yamaps.yandex_response.base.base import DestructObject
 
 
 class TestDestructObject(unittest.TestCase):
