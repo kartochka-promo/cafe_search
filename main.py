@@ -9,7 +9,7 @@ from crawler.crawler import Crawler
 
 
 redis_db_0 = redis.StrictRedis(host='localhost', port=6379, db=0)
-ya_api_key = ""
+ya_api_key = "19eaf3d4-70e0-451a-8c9c-23c6329951fd"
 request_params = {
             "text": "Кофейни",
             "lang": "ru_RU",
@@ -32,7 +32,7 @@ nice_answers = ["it was something",
                 "I love potatoes and you?"]
 
 
-telegram_token = ""
+telegram_token = "1360641966:AAGXUZ40lkFOtZI635BUsFjTD14KXFIoYiU"
 bot = Bot(token=telegram_token)
 dp = Dispatcher(bot)
 
