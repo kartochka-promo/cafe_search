@@ -1,9 +1,9 @@
 
-from ..geometry import Geometry
-from ....exceptions.exceptions import MissingRequiredProperty
-
 import unittest
 import numpy as np
+
+from yamaps.yandex_response.feature.geometry.geometry import Geometry
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class TestGeometry(unittest.TestCase):

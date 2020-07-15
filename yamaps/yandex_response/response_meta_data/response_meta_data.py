@@ -1,9 +1,9 @@
 
 from typing import Dict
-from ..base.base import DestructObject
-from ..exceptions.exceptions import MissingRequiredProperty
-from ..response_meta_data.search_request.search_request import SearchRequest
-from ..response_meta_data.search_response.search_response import SearchResponse
+from yamaps.yandex_response.base.base import DestructObject
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.response_meta_data.search_request.search_request import SearchRequest
+from yamaps.yandex_response.response_meta_data.search_response.search_response import SearchResponse
 
 
 class ResponseMetaData(DestructObject):

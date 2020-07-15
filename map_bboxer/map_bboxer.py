@@ -1,60 +1,131 @@
 
 import asyncio
-from yamaps.yamaps import YaMaps
+from typing import Dict
+from typing import List
+
 from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
+from yamaps.yamaps import YaMaps
+from yamaps.yandex_response.yandex_response import YandexResponse
 
 
 class MapBboxer:
+    """
+    Класс, который производит разбиение прямоугольного сектора (bbox)
+    на составлющие части так, чтобы в каждом секторе было < bbox_threshold объектов.
+    """
 
-    def __init__(self, yamap, request_params, bbox, bbox_threshold=500, max_workers_count=32):
-        self.__yamap = yamap
-        self.__request_params = request_params
-        self.__bbox = bbox
-        self.__bbox_threshold = bbox_threshold
-        self.__max_workers_count = max_workers_count
-        self.__queue = asyncio.Queue()
-        self._out_queue = asyncio.Queue()
+    def __init__(self, yamap: YaMaps, request_params: Dict, bbox: List[List[float]],
+                 bbox_threshold: int = 500, max_workers_count: int = 32) -> None:
+        """
+        Конструктор класса MapBboxer
+
+        :type yamap: YaMaps
+        :param yamap: объект для отправки запросов к YandexApi
+
+        :type request_params: Dict
+        :param request_params: словарь параметров запроса, передающихся в YaMaps
+
+        :type bbox: List[List[float]]
+        :param bbox: Список из двух точек (левый нижний угол поиска и правый верхний), которые описывают bbox
+
+        :type bbox_threshold: int
+        :param bbox_threshold: максимальное колличество объектов в каждом участке разбиения
+
+        :type max_workers_count: int
+        :param max_workers_count: максимальное колличество ассинхронных процессов, которые проводят разбиение
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
+        self.__yamap: YaMaps = yamap
+        self.__request_params: Dict = request_params
+        self.__bbox: List[List[float]] = bbox
+        self.__bbox_threshold: int = bbox_threshold
+        self.__max_workers_count: int = max_workers_count
+        self.__queue: asyncio.Queue = asyncio.Queue()
+        self.__out_queue: asyncio.Queue = asyncio.Queue()
         self.__futures = []
 
-    async def start_bboxing(self):
+    async def start_bboxing(self) -> None:
+        """
+        Метод, который запускает процесс разбиения
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
         await self.__queue.put(self.__bbox)
         await self.__generate_worker()
 
-        done = []
-        while len(done) != len(self.__futures):
+        done: List = []
+        while len(done) != len(self.__futures):             # TODO наверное можно лучше
             done, _ = await asyncio.wait(self.__futures)
 
-    async def __generate_worker(self):
+    async def __generate_worker(self) -> None:
+        """
+        Метод, который инициализирует одного ассинхронного воркера
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
         if len(self.__futures) < self.__max_workers_count:
             self.__futures.append(asyncio.ensure_future(self.__bbox_worker()))
 
-    async def __bbox_worker(self):
+    async def __bbox_worker(self) -> None:
+        """
+        Воркер, который производит разбиение
+
+        :rtype: None
+        :return: Ничего не возвращает
+        """
+
         while not self.__queue.empty():
-            bbox = await self.__queue.get()
-            objects_count = await self.__get_objects_in_bbox(bbox)
-            print(objects_count)
+            bbox: List[List[float]] = await self.__queue.get()
+            objects_count: int = await self.__get_objects_in_bbox(bbox)
 
             if objects_count > self.__bbox_threshold:
-                split_bbox = await self.__split_bbox(bbox)
+                split_bbox: List[List[List[float]]] = await self.__split_bbox(bbox)
                 await self.__queue.put(split_bbox[0])
                 await self.__queue.put(split_bbox[1])
                 await self.__generate_worker()
 
             else:
-                await self._out_queue.put(bbox)
+                await self.__out_queue.put(bbox)
 
-    async def __split_bbox(self, bbox):
-        x_distance = bbox[1][0] - bbox[0][0]
-        y_distance = bbox[1][1] - bbox[0][1]
+    async def __split_bbox(self, bbox: List[List[float]]) -> List[List[List[float]]]:
+        """
+        Метод, делящий bbox пополам поперёк большей стороны
+
+        :type bbox: List[List[float]]
+        :param bbox: Список из двух точек (левый нижний угол поиска и правый верхний), для разбиения
+
+        :rtype: List[List[List[float]]]
+        :return: Возращает два bbox
+        """
+
+        x_distance: float = bbox[1][0] - bbox[0][0]
+        y_distance: float = bbox[1][1] - bbox[0][1]
 
         if x_distance > y_distance:
             return await self.__split_bbox_by_x(bbox)
         else:
             return await self.__split_bbox_by_y(bbox)
 
-    async def __get_objects_in_bbox(self, bbox):
-        text_bbox = f"{bbox[0][0]},{bbox[0][1]}~{bbox[1][0]},{bbox[1][1]}"
-        ya_response = await self.__yamap.request(**self.__request_params, bbox=text_bbox)
+    async def __get_objects_in_bbox(self, bbox: List[List[float]]) -> int:
+        """
+        Метод который возвращает число найденных объектов в области(bbox)
+
+        :type bbox: List[List[float]]
+        :param bbox: bbox(список из двух точек) в котором происходит поиск объектов
+
+        :rtype: int
+        :return: число объектов в области
+        """
+
+        text_bbox: str = f"{bbox[0][0]},{bbox[0][1]}~{bbox[1][0]},{bbox[1][1]}"
+        ya_response: YandexResponse = await self.__yamap.request(**self.__request_params, bbox=text_bbox)
 
         try:
             return ya_response.response_meta_data.search_response.found
@@ -65,36 +136,59 @@ class MapBboxer:
         except Exception as e:
             print(e)
 
-    async def __split_bbox_by_x(self, bbox):
-        x_mean = (bbox[1][0] + bbox[0][0]) / 2
-        lower_shard = [[bbox[0][0], bbox[0][1]], [x_mean, bbox[1][1]]]
-        higher_shard = [[x_mean, bbox[0][1]], [bbox[1][0], bbox[1][1]]]
+    async def __split_bbox_by_x(self, bbox: List[List[float]]) -> List[List[List[float]]]:
+        """
+        Метод, производящий разделение bbox(списка из двух точек)
+        по оси x на две равные части
+
+        :type bbox: List[List[float]]
+        :param bbox: bbox(список из двух точек)
+
+        :rtype: List[List[List[float]]]
+        :return: Возвращает две полученные области
+        """
+
+        x_mean: float = (bbox[1][0] + bbox[0][0]) / 2
+        lower_shard: List[List[float]] = [[bbox[0][0], bbox[0][1]], [x_mean, bbox[1][1]]]
+        higher_shard: List[List[float]] = [[x_mean, bbox[0][1]], [bbox[1][0], bbox[1][1]]]
 
         return [lower_shard, higher_shard]
 
-    async def __split_bbox_by_y(self, bbox):
-        y_mean = (bbox[1][1] + bbox[0][1]) / 2
-        lower_shard = [[bbox[0][0], bbox[0][1]], [bbox[1][0], y_mean]]
-        higher_shard = [[bbox[0][0], y_mean], [bbox[1][0], bbox[1][1]]]
+    async def __split_bbox_by_y(self, bbox: List[List[float]]) -> List[List[List[float]]]:
+        """
+        Метод, производящий разделение bbox(списка из двух точек)
+        по оси y на две равные части
+
+        :type bbox: List[List[float]]
+        :param bbox: bbox(список из двух точек)
+
+        :rtype: List[List[List[float]]]
+        :return: Возвращает две полученные области
+        """
+
+        y_mean: float = (bbox[1][1] + bbox[0][1]) / 2
+        lower_shard: List[List[float]] = [[bbox[0][0], bbox[0][1]], [bbox[1][0], y_mean]]
+        higher_shard: List[List[float]] = [[bbox[0][0], y_mean], [bbox[1][0], bbox[1][1]]]
 
         return [lower_shard, higher_shard]
 
+    async def get_out_queue(self) -> asyncio.Queue:  # TODO pretty getters
+        """
+        Getter возвращающий очередь, с полученными областями разбиения
 
-# async def test():
-#     async with YaMaps("37b33a30-d0da-4053-aee9-07230f897a46") as yamap:
-#         request_params = {
-#             "text": "Кофейни",
-#             "lang": "ru_RU",
-#             "type": "biz",
-#             "rspn": "1",
-#             "results": "500"
-#         }
-#         bbox = [[37.048427, 55.43644866], [38.175903, 56.04690174]]
-#
-#         bboxer = MapBboxer(yamap, request_params, bbox)
-#         await bboxer.start_bboxing()
-#         while not bboxer._out_queue.empty():
-#             print(await bboxer._out_queue.get())
-#
-# loop = asyncio.get_event_loop()
-# result = loop.run_until_complete(test())
+        :rtype: asyncio.Queue
+        :return: очередь, с полученными областями разбиения
+        """
+
+        return self.__out_queue
+
+    async def get_out_list(self) -> List:   # TODO pretty getters
+        """
+        Getter возвращающий список, с полученными областями разбиения
+
+        :rtype: asyncio.Queue
+        :return: очередь, с полученными областями разбиения
+        """
+
+        futures = [self.__out_queue.get() for _ in range(self.__out_queue.qsize())]
+        return await asyncio.gather(*futures)
