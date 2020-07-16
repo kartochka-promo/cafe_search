@@ -1,9 +1,9 @@
 
 import unittest
-from ...exceptions.exceptions import MissingRequiredProperty
-from ..feature import Feature
-from ..company_meta_data.company_meta_data import CompanyMetaData
-from ..geometry.geometry import Geometry
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.feature.feature import Feature
+from yamaps.yandex_response.feature.company_meta_data.company_meta_data import CompanyMetaData
+from yamaps.yandex_response.feature.geometry.geometry import Geometry
 
 
 class TestFeature(unittest.TestCase):

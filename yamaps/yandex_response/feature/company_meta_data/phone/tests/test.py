@@ -1,6 +1,6 @@
 
-from ..phone import Phone
-from .....exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.feature.company_meta_data.phone.phone import Phone
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 import unittest
 
 

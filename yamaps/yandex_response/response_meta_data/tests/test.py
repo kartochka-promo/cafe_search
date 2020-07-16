@@ -1,8 +1,10 @@
+
 import unittest
-from ..response_meta_data import ResponseMetaData
-from ..search_request.search_request import SearchRequest
-from ..search_response.search_response import SearchResponse
-from ...exceptions.exceptions import MissingRequiredProperty
+
+from yamaps.yandex_response.response_meta_data.response_meta_data import ResponseMetaData
+from yamaps.yandex_response.response_meta_data.search_request.search_request import SearchRequest
+from yamaps.yandex_response.response_meta_data.search_response.search_response import SearchResponse
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class TestResponseMetaData(unittest.TestCase):

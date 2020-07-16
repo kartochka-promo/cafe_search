@@ -1,10 +1,10 @@
 
-from ...base.base import DestructObject
-from ...exceptions.exceptions import MissingRequiredProperty
-
 import numpy as np
 from typing import Dict
 from typing import List
+
+from yamaps.yandex_response.base.base import DestructObject
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class SearchRequest(DestructObject):

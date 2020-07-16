@@ -2,9 +2,9 @@
 from typing import Dict
 from typing import List
 
-from ....base.base import DestructObject
-from ....exceptions.exceptions import MissingRequiredProperty
-from ..hours.avability.avability import Availability
+from yamaps.yandex_response.base.base import DestructObject
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.feature.company_meta_data.hours.avability.avability import Availability
 
 
 class Hours(DestructObject):

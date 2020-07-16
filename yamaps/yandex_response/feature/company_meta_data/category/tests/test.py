@@ -1,7 +1,7 @@
 
 import unittest
-from ..category import Category
-from .....exceptions.exceptions import MissingRequiredProperty
+from yamaps.yandex_response.feature.company_meta_data.category.category import Category
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class TestHours(unittest.TestCase):

@@ -1,7 +1,9 @@
+
 import unittest
-from ..yandex_response import YandexResponse
-from ..response_meta_data.response_meta_data import ResponseMetaData
-from ..exceptions.exceptions import MissingRequiredProperty
+
+from yamaps.yandex_response.yandex_response import YandexResponse
+from yamaps.yandex_response.response_meta_data.response_meta_data import ResponseMetaData
+from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
 
 
 class TestYandexResponse(unittest.TestCase):
