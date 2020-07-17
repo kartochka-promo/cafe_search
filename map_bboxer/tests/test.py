@@ -28,7 +28,7 @@ def async_test(f):
 class TestMapBboxer(unittest.TestCase):
     """
     Класс для тестирования класса MapBboxer
-    Запуск тестов - coverage3 run --source cafe_search/ -m unittest discover cafe_search
+    Запуск тестов - python -m coverage run --source=cafe_search/ -m unittest discover cafe_search
     Покрытие coverage report -m
     """
 
