@@ -56,13 +56,13 @@ class MapBboxer:
         """
 
         await self.__queue.put(self.__bbox)
-        await self.__generate_worker()
+        await self._generate_worker()
 
         done: List = []
         while len(done) != len(self.__futures):             # TODO наверное можно лучше
             done, _ = await asyncio.wait(self.__futures)
 
-    async def __generate_worker(self) -> None:
+    async def _generate_worker(self) -> None:
         """
         Метод, который инициализирует одного ассинхронного воркера
 
@@ -71,9 +71,9 @@ class MapBboxer:
         """
 
         if len(self.__futures) < self.__max_workers_count:
-            self.__futures.append(asyncio.ensure_future(self.__bbox_worker()))
+            self.__futures.append(asyncio.ensure_future(self._bbox_worker()))
 
-    async def __bbox_worker(self) -> None:
+    async def _bbox_worker(self) -> None:
         """
         Воркер, который производит разбиение
 
@@ -83,18 +83,18 @@ class MapBboxer:
 
         while not self.__queue.empty():
             bbox: List[List[float]] = await self.__queue.get()
-            objects_count: int = await self.__get_objects_in_bbox(bbox)
+            objects_count: int = await self._get_objects_in_bbox(bbox)
 
             if objects_count > self.__bbox_threshold:
-                split_bbox: List[List[List[float]]] = await self.__split_bbox(bbox)
+                split_bbox: List[List[List[float]]] = await self._split_bbox(bbox)
                 await self.__queue.put(split_bbox[0])
                 await self.__queue.put(split_bbox[1])
-                await self.__generate_worker()
+                await self._generate_worker()
 
             else:
                 await self.__out_queue.put(bbox)
 
-    async def __split_bbox(self, bbox: List[List[float]]) -> List[List[List[float]]]:
+    async def _split_bbox(self, bbox: List[List[float]]) -> List[List[List[float]]]:
         """
         Метод, делящий bbox пополам поперёк большей стороны
 
@@ -109,11 +109,11 @@ class MapBboxer:
         y_distance: float = bbox[1][1] - bbox[0][1]
 
         if x_distance > y_distance:
-            return await self.__split_bbox_by_x(bbox)
+            return await self._split_bbox_by_x(bbox)
         else:
-            return await self.__split_bbox_by_y(bbox)
+            return await self._split_bbox_by_y(bbox)
 
-    async def __get_objects_in_bbox(self, bbox: List[List[float]]) -> int:
+    async def _get_objects_in_bbox(self, bbox: List[List[float]]) -> int:
         """
         Метод который возвращает число найденных объектов в области(bbox)
 
@@ -136,7 +136,7 @@ class MapBboxer:
         except Exception as e:
             print(e)
 
-    async def __split_bbox_by_x(self, bbox: List[List[float]]) -> List[List[List[float]]]:
+    async def _split_bbox_by_x(self, bbox: List[List[float]]) -> List[List[List[float]]]:
         """
         Метод, производящий разделение bbox(списка из двух точек)
         по оси x на две равные части
@@ -154,7 +154,7 @@ class MapBboxer:
 
         return [lower_shard, higher_shard]
 
-    async def __split_bbox_by_y(self, bbox: List[List[float]]) -> List[List[List[float]]]:
+    async def _split_bbox_by_y(self, bbox: List[List[float]]) -> List[List[List[float]]]:
         """
         Метод, производящий разделение bbox(списка из двух точек)
         по оси y на две равные части

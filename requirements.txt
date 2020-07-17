@@ -11,3 +11,4 @@ numpy==1.19.0
 pytz==2020.1
 redis==3.5.3
 yarl==1.4.2
+asynctest~=0.13.0
