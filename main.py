@@ -13,7 +13,7 @@ from crawler.crawler import Crawler
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
-redis_db_0 = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_db_0 = redis.StrictRedis(host='redis', port=6379, db=0)
 ya_api_key = "19eaf3d4-70e0-451a-8c9c-23c6329951fd"
 request_params = {
             "text": "Кофейни",
