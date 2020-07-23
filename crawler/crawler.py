@@ -2,6 +2,7 @@
 import pickle
 import random
 import asyncio
+import logging.config
 from typing import List
 from typing import Dict
 
@@ -9,6 +10,9 @@ from yamaps.yamaps import YaMaps
 from map_bboxer.map_bboxer import MapBboxer
 from yamaps.yandex_response.feature.feature import Feature
 from yamaps.yandex_response.exceptions.exceptions import MissingRequiredProperty
+
+logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
 
 
 class Crawler:
@@ -54,19 +58,18 @@ class Crawler:
         :return: Ничего не возвращает
         """
 
-        print("Start Bboxing")
-
+        logger.debug("Start Bboxing")
         map_bboxing = await self.__get_map_bboxing()
-        print("bboxing OK", map_bboxing)
+        logger.debug(f"bboxing complete {map_bboxing}")
 
         await self.__fill_bbox_queue(map_bboxing)
-        print("fill_bbox_queue OK")
+        logger.debug("fill_bbox_queue complete")
 
         await self.__run_bbox_workers()
-        print("run_bbox_workers OK")
+        logger.debug("run_bbox_workers complete")
 
         await self.__run_feature_workers()
-        print("run_feature_workers OK")
+        logger.debug("run_feature_workers complete")
 
     async def __run_feature_workers(self):
         """
@@ -97,10 +100,10 @@ class Crawler:
                 await self.__handle_feature(feature)
 
             except KeyError as e:
-                print("something wrongs", e)                            # TODO loggining
+                logger.exception(e)
 
             except Exception as e:
-                print("Oopse", e)                                       # TODO loggining
+                logger.exception(e)
 
     async def __handle_feature(self, feature: Feature):
         """

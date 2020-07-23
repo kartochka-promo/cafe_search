@@ -1,4 +1,4 @@
 # Запуск тестов
-coverage3 run -m unittest discover cafe_search -v  --source cafe_search
+python -m coverage run --source=cafe_search/ -m unittest discover cafe_search/
 # Покрытие
 coverage report -m
